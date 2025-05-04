@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCart } from '../contexts/CartContext';
+import { useCart } from '../contexts/CartContext'; // Importe useCart
 import { formatCurrency } from '../utils/formatters';
 import { MinusCircle, PlusCircle, Trash2, ChevronLeft, ShoppingBag } from 'lucide-react';
 
 const CartPage: React.FC = () => {
-  const { cart, removeFromCart, updateQuantity, clearCart, getCartTotal } = useCart();
+  // Importe finalizePurchase do hook useCart
+  const { cart, removeFromCart, updateQuantity, clearCart, getCartTotal, finalizePurchase } = useCart();
 
   const handleQuantityChange = (productId: string, quantity: number) => {
     updateQuantity(productId, quantity);
@@ -15,6 +16,17 @@ const CartPage: React.FC = () => {
   const handleRemoveItem = (productId: string) => {
     removeFromCart(productId);
   };
+
+  // ✨ REMOVA ESTA FUNÇÃO handleCheckout LOCAL ✨
+  // const handleCheckout = () => {
+  //   const externalLinks = cart.map(item => item.product.externalLink).filter(Boolean);
+  //   if (externalLinks.length > 0) {
+  //     window.open(externalLinks[0], '_blank');
+  //     // Para abrir todos os links: externalLinks.forEach(link => window.open(link, '_blank'));
+  //   } else {
+  //     alert('Nenhum link de compra encontrado.');
+  //   }
+  // };
 
   if (cart.length === 0) {
     return (
@@ -84,7 +96,7 @@ const CartPage: React.FC = () => {
                           className="w-full h-full object-cover rounded-md"
                         />
                       </Link>
-                      
+
                       {/* Detalhes do produto */}
                       <div className="flex-1">
                         <Link to={`/produto/${item.product._id}`} className="block">
@@ -92,13 +104,13 @@ const CartPage: React.FC = () => {
                             {item.product.name}
                           </h3>
                         </Link>
-                        
+
                         {item.product.seller && (
                           <p className="text-sm text-neutral-500 mb-2">
                             Vendido por: {item.product.seller.name}
                           </p>
                         )}
-                        
+
                         <div className="flex items-center gap-3 mt-4">
                           {/* Controle de quantidade */}
                           <div className="flex items-center">
@@ -119,7 +131,7 @@ const CartPage: React.FC = () => {
                               <PlusCircle size={20} />
                             </button>
                           </div>
-                          
+
                           {/* Remover item */}
                           <button
                             onClick={() => handleRemoveItem(item.product._id)}
@@ -129,7 +141,7 @@ const CartPage: React.FC = () => {
                           </button>
                         </div>
                       </div>
-                      
+
                       {/* Preço */}
                       <div className="text-right">
                         <p className="text-lg font-semibold text-neutral-900">
@@ -146,7 +158,7 @@ const CartPage: React.FC = () => {
                 ))}
               </AnimatePresence>
             </ul>
-            
+
             <div className="p-4 sm:p-6 border-t border-neutral-200 bg-neutral-50 flex justify-between items-center">
               <Link to="/catalogo" className="flex items-center text-primary-600 hover:text-primary-700 transition-colors">
                 <ChevronLeft size={18} className="mr-1" />
@@ -161,7 +173,7 @@ const CartPage: React.FC = () => {
             </div>
           </div>
         </motion.div>
-        
+
         {/* Resumo do pedido */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -172,7 +184,7 @@ const CartPage: React.FC = () => {
             <h2 className="text-xl font-bold text-neutral-900 mb-6">
               Resumo do Pedido
             </h2>
-            
+
             <div className="space-y-3 mb-6">
               <div className="flex justify-between">
                 <span className="text-neutral-600">Subtotal</span>
@@ -180,7 +192,7 @@ const CartPage: React.FC = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-neutral-600">Frete</span>
-                <span className="text-neutral-900 font-medium">Grátis</span>
+                <span className="text-neutral-900 font-medium">Grátis</span> {/* Assumindo frete grátis por agora */}
               </div>
               <div className="border-t border-neutral-200 pt-3 mt-3">
                 <div className="flex justify-between">
@@ -189,7 +201,7 @@ const CartPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Código de cupom */}
             <div className="mb-6">
               <label htmlFor="coupon" className="block text-sm font-medium text-neutral-700 mb-2">
@@ -207,17 +219,16 @@ const CartPage: React.FC = () => {
                 </button>
               </div>
             </div>
-            
+
             {/* Botão de finalizar compra */}
-            <a 
-              href="#" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            <button
+              // ✨ CHAME A FUNÇÃO finalizePurchase DO CONTEXTO ✨
+              onClick={finalizePurchase}
               className="button-secondary w-full py-3 text-center block"
             >
               Finalizar Compra
-            </a>
-            
+            </button>
+
             <p className="text-xs text-neutral-500 text-center mt-4">
               Ao finalizar, você será redirecionado para o site do vendedor para concluir sua compra.
             </p>
