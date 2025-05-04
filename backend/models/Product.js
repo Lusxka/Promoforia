@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema({
     categoria: { type: String },
     desconto: { type: String },
     frete: { type: String },
-    imagens: { type: String }, // Parece ser uma URL única na imagem. Se puder ser um array, use [String]
+    imagem: { type: String }, // Parece ser uma URL única na imagem. Se puder ser um array, use [String]
     link_afiliado: { type: String, unique: true }, // Link parece ser um bom identificador único
     numero_avaliacoes: { type: String }, // Ou Number
     parcelas: { type: String },
@@ -22,7 +22,7 @@ const productSchema = new mongoose.Schema({
 }, {
     timestamps: true, // Adiciona createdAt e updatedAt automaticamente
     // Importante: Especifique a coleção exata se o nome do modelo no plural não for igual
-    collection: 'mercado_livre_relampago'
+    collection: 'mercado_livre_todas'
 });
 
 // Criar um índice no link_afiliado pode melhorar a performance de busca se você buscar por ele

@@ -22,7 +22,7 @@ const parseCurrencyString = (value: string | undefined | null): number => {
 // Converte string numérica com ou sem % (ex: "15%", "15") para number (ex: 15)
 const parsePercentageString = (value: string | undefined | null): number => {
     if (value === undefined || value === null || value === "") {
-        return 0;
+      return 0;
     }
     const cleanedValue = value.replace(/%/g, '');
     const number = parseFloat(cleanedValue);
@@ -31,7 +31,7 @@ const parsePercentageString = (value: string | undefined | null): number => {
 
 // Converte string numérica (ex: "4.5", "120") para number
 const parseSimpleNumberString = (value: string | undefined | null): number => {
-     if (value === undefined || value === null || value === "") {
+      if (value === undefined || value === null || value === "") {
         return 0;
     }
     const number = parseFloat(value);
@@ -96,9 +96,9 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
     'beleza': <Brush size={28} />,
     'esportes': <Dumbbell size={28} />,
     'entretenimento': <Tv size={28} />,
-     'telefonia': <Smartphone size={28} />,
-     'informatica': <Tv size={28} />,
-     'casa-moveis-decoracao': <Home size={28} />,
+      'telefonia': <Smartphone size={28} />,
+      'informatica': <Tv size={28} />,
+      'casa-moveis-decoracao': <Home size={28} />,
     // Add mappings for any other categories your backend might return after slugging
     'outros': <LayoutGrid size={28} />, // Default slug for products without category
     'default': <LayoutGrid size={28} />, // Default icon if slug doesn't match mapping
@@ -143,7 +143,7 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
                 // Only include discount if it's a valid number and greater than 0
                 discount: discount > 0 ? discount : undefined,
                 // Convert single image string to an array, handle missing image
-                images: item.imagens ? [item.imagens] : [],
+                images: item.imagem ? [item.imagem] : [], // ALTERADO AQUI: item.imagem (singular) para array images (plural)
                 categorySlug: categorySlug,
                 backendCategory: item.categoria, // Keep backend category name if useful
                 tags: [], // No tags in backend, provide empty array
@@ -182,7 +182,7 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
         processedProducts.forEach(product => {
             // Use the derived slug for counting
             const slug = product.categorySlug || 'outros';
-             // Use the original backend category name if available, fallback to slug
+              // Use the original backend category name if available, fallback to slug
             const title = product.backendCategory || (slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' '));
 
             if (!categoryCounts[slug]) {
@@ -206,7 +206,7 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
       } catch (err: any) {
         console.error('Erro ao buscar e processar dados:', err);
         // Check if it's an Axios error with a response
-         const errorMessage = axios.isAxiosError(err) && err.response
+          const errorMessage = axios.isAxiosError(err) && err.response
             ? `Erro do servidor: ${err.response.status} - ${err.response.data?.message || err.message}`
             : 'Não foi possível carregar os dados. Por favor, tente novamente mais tarde.';
         setError(errorMessage);
@@ -224,7 +224,7 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
   };
 
   const getProductsByCategory = (categorySlug: string) => {
-     if (!categorySlug) return allProducts; // Return all if no category is specified
+      if (!categorySlug) return allProducts; // Return all if no category is specified
     return allProducts.filter(product => product.categorySlug === categorySlug);
   };
 
