@@ -5,13 +5,27 @@ import { Link } from 'react-router-dom';
 
 const HeroSection: React.FC = () => {
   return (
-    <div className="relative bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white pt-24 pb-16 md:pt-32 md:pb-24">
-      {/* Overlay pattern */}
-      <div className="absolute inset-0 opacity-10" style={{
-        backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'
-      }} />
+    <div className="relative text-white pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
+      {/* Vídeo de fundo com looping infinito */}
+      {/* Removemos o overlay azul para o vídeo ficar visível */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover opacity-1000" // Aumentamos a opacidade para o vídeo ser mais visível
+        >
+          <source src="src/components/layout/img/fundo.mp4" type="video/mp4" />
+          Seu navegador não suporta vídeo em HTML5.
+        </video>
+      </div>
 
-      <div className="container-custom relative">
+      {/* Removemos este overlay de cor que criava o fundo azul
+      <div className="absolute inset-0 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 opacity-80 z-10" />
+      */}
+
+      <div className="container-custom relative z-20"> {/* Conteúdo acima do vídeo */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           {/* Hero Content */}
           <motion.div
@@ -20,10 +34,10 @@ const HeroSection: React.FC = () => {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              As melhores ofertas para você em um só lugar
+            As ofertas imperdíveis que você procura, reunidas em um só lugar
             </h1>
             <p className="text-lg md:text-xl text-neutral-200 mb-8 max-w-xl">
-              Encontre produtos exclusivos, com descontos incríveis e ganhe bônus em todas as suas compras.
+              Encontre produtos exclusivos, com descontos incríveis e ganhe descontos em todas as suas compras.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/catalogo" className="button-secondary text-center">
@@ -66,7 +80,7 @@ const HeroSection: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Stats - These are hardcoded. If you want them dynamic, you'd need a backend endpoint for stats */}
+        {/* Stats */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
