@@ -15,7 +15,7 @@ app.use(express.json()); // Permite que o servidor entenda JSON no corpo das req
 
 // Rota de Teste
 app.get('/', (req, res) => {
-    res.send('API WebCash está rodando!');
+    res.send('API PROMOFORIA está rodando!');
 });
 
 // Monta as Rotas de Produtos

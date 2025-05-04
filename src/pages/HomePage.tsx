@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import HeroSection from '../components/home/HeroSection';
 import FeaturedProducts from '../components/home/FeaturedProducts';
 import CategoriesSection from '../components/home/CategoriesSection';
-import Modal from '../components/Modal';
+import Modal from '../components/home/Modal';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Truck, Headphones, RefreshCw, CheckCircle } from 'lucide-react'; // ✅ Importe CheckCircle ou outro ícone de sucesso ✅
 
@@ -146,7 +146,7 @@ const HomePage: React.FC = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         // O título pode mudar dependendo do conteúdo
-        title={modalContent === 'form' ? "Seja um seguidor da Promoforia" : "Inscrição Confirmada!"}
+        title={modalContent === 'form' ? "Bem Vindo ao Promoforia ! Seja um seguidor" : "Inscrição Confirmada!"}
       >
         {/* ✅ Conteúdo do Modal Condicional: Formulário OU Mensagem de Sucesso ✅ */}
         {modalContent === 'form' ? (

@@ -48,7 +48,7 @@ const Header: React.FC = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center">
           <ShoppingBag size={28} className="text-primary-600 mr-2" />
-          <span className="text-xl font-bold text-primary-800">WebCash</span>
+          <span className="text-xl font-bold text-primary-800">Promoforia</span>
         </Link>
 
         {/* Desktop Navigation */}

@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
           <div>
             <Link to="/" className="flex items-center mb-4">
               <ShoppingBag size={28} className="text-secondary-500 mr-2" />
-              <span className="text-xl font-bold text-white">WebCash</span>
+              <span className="text-xl font-bold text-white">Promoforia</span>
             </Link>
             <p className="text-neutral-400 mb-4">
               Sua plataforma de compras online com os melhores produtos e ofertas exclusivas para você.
@@ -107,7 +107,7 @@ const Footer: React.FC = () => {
               </li>
               <li className="flex items-center">
                 <Mail size={18} className="text-secondary-500 mr-2 flex-shrink-0" />
-                <span className="text-neutral-400">contato@webcash.com.br</span>
+                <span className="text-neutral-400">suportwebcash@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -136,7 +136,7 @@ const Footer: React.FC = () => {
         {/* Copyright */}
         <div className="border-t border-neutral-800 pt-6 text-center text-neutral-500 text-sm">
           <p>
-            &copy; {currentYear} WebCash. Todos os direitos reservados. Plataforma de Marketing de Afiliados.
+            &copy; {currentYear} Promoforia | Todos os direitos reservados. Plataforma de Marketing de Afiliados.
           </p>
         </div>
       </div>
