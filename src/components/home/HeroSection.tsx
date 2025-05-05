@@ -58,12 +58,12 @@ const HeroSection: React.FC = () => {
           >
             <div className="relative bg-white/10 p-2 rounded-lg backdrop-blur-sm rotate-3 shadow-xl">
               <img
-                src="https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                src= "src/components/layout/img/banner1.png"
                 alt="Produtos em destaque"
                 className="w-full h-auto rounded"
               />
               <div className="absolute -bottom-4 -left-4 bg-secondary-500 text-white px-4 py-2 rounded-lg shadow-lg">
-                <p className="text-sm font-semibold">Até 40% OFF</p>
+                <p className="text-sm font-semibold">Frete Grátis</p>
               </div>
             </div>
 
