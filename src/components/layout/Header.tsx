@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Heart, Search, Menu, X, ShoppingBag } from 'lucide-react';
+import { ShoppingCart, Heart, Search, Menu, X } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useWishlist } from '../../contexts/WishlistContext';
+
+// IMPORTAR SUAS IMAGENS DE LOGO AQUI
+// >>>>>> VERIFIQUE CUIDADOSAMENTE ESTES CAMINHOS <<<<<<
+// Assumindo que Header.tsx está em `src/components/layout/`, os caminhos relativos são estes:
+import logoClaro from './img/logo_branco.png'; // Logo para fundo transparente/escuro (Home topo)
+import logoEscuro from './img/logo_preto.png';  // Logo para fundo branco (rolado ou outras páginas)
+// Se Header.tsx estiver em outro lugar, ajuste o caminho relativo (`./img/...` ou `../layout/img/...`)
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -26,7 +33,6 @@ const Header: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Fechar menu mobile quando a rota mudar
     setIsMobileMenuMenuOpen(false);
   }, [location.pathname]);
 
@@ -37,47 +43,53 @@ const Header: React.FC = () => {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Redirecionar para página de busca
       window.location.href = `/catalogo?q=${encodeURIComponent(searchQuery)}`;
     }
   };
 
-  // Determina a cor do texto e ícones com base no estado de scroll E na página atual
-  // Cor é escura SE: rolou (em qualquer página) OU está no topo MAS NÃO é a Home page
-  // Cor é branca SOMENTE SE: NÃO rolou E é a Home page
-  const isDarkColor = isScrolled || !isHomePage;
+  // --- Lógica para CORES dos OUTROS elementos (links, ícones) - JÁ ESTAVA OK ---
+  const useDarkColorsForOtherElements = isScrolled || !isHomePage;
+  const textColorClass = useDarkColorsForOtherElements ? 'text-neutral-700' : 'text-white';
+   const iconColorClass = useDarkColorsForOtherElements ? 'text-neutral-700' : 'text-white';
+   const hoverTextColorClass = !useDarkColorsForOtherElements ? 'hover:text-neutral-300' : 'hover:text-primary-600';
+  // --------------------------------------------------------------------
 
-  const textColorClass = isDarkColor ? 'text-neutral-700' : 'text-white';
-  // Cor primária para o nome da loja: escura em fundo branco, branca em fundo escuro inicial
-  const primaryTextColorClass = isDarkColor ? 'text-primary-800' : 'text-white';
-  // Cor do ícone da sacola no logo: primária em fundo branco, branca em fundo escuro inicial
-   const logoIconColorClass = isDarkColor ? 'text-primary-600' : 'text-white';
-  // Cor dos outros ícones (carrinho, favoritos, menu): escura em fundo branco, branca em fundo escuro inicial
-   const iconColorClass = isDarkColor ? 'text-neutral-700' : 'text-white';
-
-  // Ajusta a cor do hover: se a cor atual for branca, hover claro; se for escura, hover primário
-  const hoverTextColorClass = !isDarkColor ? 'hover:text-neutral-300' : 'hover:text-primary-600';
+  // --- Lógica para qual IMAGEM de Logo usar - JÁ ESTAVA OK ---
+  const useDarkLogoImage = isScrolled || !isHomePage;
+  // ------------------------------------------
 
 
   return (
     <header
-       // O background do header já alterna corretamente com base em isScrolled
       className={`fixed w-full z-50 transition-all duration-300 ${
         isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
       }`}
     >
       <div className="container-custom flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center">
-          {/* Aplica a cor dinâmica no ícone da sacola */}
-          <ShoppingBag size={28} className={`${logoIconColorClass} mr-2`} />
-          {/* Aplica a cor dinâmica no texto do nome da loja */}
-          <span className={`text-xl font-bold ${primaryTextColorClass}`}>Promoforia</span>
+        {/* Logo com Imagem Dinâmica */}
+        {/* ml-4 mantém o afastamento da esquerda. Ajuste este valor se precisar. */}
+        <Link to="/" className="flex items-center ml-4">
+          {useDarkLogoImage ? (
+            // Renderiza a imagem do logo escuro
+            <img
+              src={logoEscuro} // Use a variável importada
+              alt="Promoforia Logo"
+              // >>>>>> VERSÃO 2: Tamanho h-[72px] <<<<<<
+              className="h-[72px] w-auto transition-opacity duration-300" // <-- h-14 mudado para h-[72px]
+            />
+          ) : (
+            // Renderiza a imagem do logo claro
+            <img
+              src={logoClaro} // Use a variável importada
+              alt="Promoforia Logo"
+               // >>>>>> VERSÃO 2: Tamanho h-[72px] <<<<<<
+              className="h-[72px] w-auto transition-opacity duration-300" // <-- h-14 mudado para h-[72px]
+            />
+          )}
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation - USA AS CORES DINÂMICAS */}
         <nav className="hidden md:flex items-center space-x-6">
-          {/* Aplica as cores dinâmicas nos links */}
           <Link to="/" className={`${textColorClass} ${hoverTextColorClass} font-medium`}>
             Início
           </Link>
@@ -85,50 +97,36 @@ const Header: React.FC = () => {
             Produtos
           </Link>
           <div className="group relative">
-            {/* Aplica as cores dinâmicas no botão de Categorias */}
             <button className={`${textColorClass} ${hoverTextColorClass} font-medium flex items-center`}>
               Categorias
             </button>
-            {/* O dropdown de categorias mantém o fundo branco e texto escuro - sem alteração */}
+            {/* Dropdown permanece fixo */}
             <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-              {/* Links do dropdown permanecem escuros */}
-              <Link to="/catalogo?categoria=eletronicos" className="block px-4 py-2 text-neutral-700 hover:bg-primary-50 hover:text-primary-600">
-                Eletrônicos
-              </Link>
-              <Link to="/catalogo?categoria=moda" className="block px-4 py-2 text-neutral-700 hover:bg-primary-50 hover:text-primary-600">
-                Moda
-              </Link>
-              <Link to="/catalogo?categoria=casa" className="block px-4 py-2 text-neutral-700 hover:bg-primary-50 hover:text-primary-600">
-                Casa e Decoração
-              </Link>
-              <Link to="/catalogo?categoria=beleza" className="block px-4 py-2 text-neutral-700 hover:bg-primary-50 hover:text-primary-600">
-                Beleza
-              </Link>
-              <Link to="/catalogo?categoria=esportes" className="block px-4 py-2 text-neutral-700 hover:bg-primary-50 hover:text-primary-600">
-                Esportes
-              </Link>
+              <Link to="/catalogo?categoria=eletronicos" className="block px-4 py-2 text-neutral-700 hover:bg-primary-50 hover:text-primary-600">Eletrônicos</Link>
+              <Link to="/catalogo?categoria=moda" className="block px-4 py-2 text-neutral-700 hover:bg-primary-50 hover:text-primary-600">Moda</Link>
+              <Link to="/catalogo?categoria=casa" className="block px-4 py-2 text-neutral-700 hover:bg-primary-50 hover:text-primary-600">Casa e Decoração</Link>
+              <Link to="/catalogo?categoria=beleza" className="block px-4 py-2 text-neutral-700 hover:bg-primary-50 hover:text-primary-600">Beleza</Link>
+              <Link to="/catalogo?categoria=esportes" className="block px-4 py-2 text-neutral-700 hover:bg-primary-50 hover:text-primary-600">Esportes</Link>
             </div>
           </div>
         </nav>
 
-        {/* Search Form Desktop - Mantido escuro no input, ícone dinâmico*/}
+        {/* Search Form Desktop - Input fixo, ícone dinâmico */}
         <form onSubmit={handleSearchSubmit} className="hidden md:flex relative mx-4 flex-grow max-w-md">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar produtos..."
-            className="w-full px-4 py-2 rounded-full border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500 text-neutral-700" // Texto digitado sempre escuro
+            className="w-full px-4 py-2 rounded-full border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500 text-neutral-700"
           />
-           {/* Ícone de busca permanece neutro */}
-          <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-500 hover:text-primary-600">
+          <button type="submit" className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${iconColorClass} ${hoverTextColorClass}`}>
             <Search size={18} />
           </button>
         </form>
 
-        {/* Desktop Icons */}
+        {/* Desktop Icons - USAM CORES DINÂMICAS */}
         <div className="hidden md:flex items-center space-x-4">
-          {/* Aplica a cor dinâmica nos ícones */}
           <Link to="/favoritos" className={`relative p-2 ${iconColorClass} ${hoverTextColorClass} transition-colors`}>
             <Heart size={22} />
             {wishlist.length > 0 && (
@@ -147,9 +145,8 @@ const Header: React.FC = () => {
           </Link>
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Button - USA COR DINÂMICA */}
         <div className="flex md:hidden items-center space-x-3">
-           {/* Aplica cor dinâmica no ícone do carrinho no mobile */}
           <Link to="/carrinho" className={`relative p-2 ${iconColorClass}`}>
             <ShoppingCart size={20} />
             {getCartCount() > 0 && (
@@ -158,7 +155,6 @@ const Header: React.FC = () => {
               </span>
             )}
           </Link>
-          {/* Aplica cor dinâmica no ícone do menu mobile */}
           <button
             onClick={toggleMobileMenu}
             className={`p-2 ${iconColorClass} focus:outline-none`}
@@ -168,54 +164,37 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Menu - Mantido com fundo branco e texto escuro */}
+      {/* Mobile Menu - Permanece fixo */}
       <div
         className={`md:hidden bg-white absolute w-full shadow-md transition-all duration-300 ${
           isMobileMenuOpen ? 'opacity-100 visible max-h-screen' : 'opacity-0 invisible max-h-0'
         } overflow-hidden`}
       >
         <div className="container-custom py-4 flex flex-col space-y-4">
-          {/* Search Form Mobile - Mantido escuro */}
+           {/* Search Form Mobile - Input fixo, ícone fixo */}
            <form onSubmit={handleSearchSubmit} className="flex relative">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar produtos..."
-              className="w-full px-4 py-2 rounded-full border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-300 text-neutral-700" // Texto digitado sempre escuro
+              className="w-full px-4 py-2 rounded-full border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-300 text-neutral-700"
             />
-             {/* Ícone de busca permanece neutro */}
             <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-500">
               <Search size={18} />
             </button>
           </form>
 
-          {/* Mobile Navigation - Mantidos escuros */}
+          {/* Mobile Navigation - Links fixos */}
           <nav className="flex flex-col space-y-3">
-            <Link to="/" className="text-neutral-700 py-2 border-b border-neutral-100">
-              Início
-            </Link>
-            <Link to="/catalogo" className="text-neutral-700 py-2 border-b border-neutral-100">
-              Produtos
-            </Link>
-            <Link to="/catalogo?categoria=eletronicos" className="text-neutral-700 py-2 border-b border-neutral-100 pl-4">
-              Eletrônicos
-            </Link>
-            <Link to="/catalogo?categoria=moda" className="text-neutral-700 py-2 border-b border-neutral-100 pl-4">
-              Moda
-            </Link>
-            <Link to="/catalogo?categoria=casa" className="text-neutral-700 py-2 border-b border-neutral-100 pl-4">
-              Casa e Decoração
-            </Link>
-            <Link to="/catalogo?categoria=beleza" className="text-neutral-700 py-2 border-b border-neutral-100 pl-4">
-              Beleza
-            </Link>
-            <Link to="/catalogo?categoria=esportes" className="text-neutral-700 py-2 border-b border-neutral-100 pl-4">
-              Esportes
-            </Link>
-            <Link to="/favoritos" className="text-neutral-700 py-2 border-b border-neutral-100">
-              Favoritos ({wishlist.length})
-            </Link>
+            <Link to="/" className="text-neutral-700 py-2 border-b border-neutral-100">Início</Link>
+            <Link to="/catalogo" className="text-neutral-700 py-2 border-b border-neutral-100">Produtos</Link>
+            <Link to="/catalogo?categoria=eletronicos" className="text-neutral-700 py-2 border-b border-neutral-100 pl-4">Eletrônicos</Link>
+            <Link to="/catalogo?categoria=moda" className="text-neutral-700 py-2 border-b border-neutral-100 pl-4">Moda</Link>
+            <Link to="/catalogo?categoria=casa" className="text-neutral-700 py-2 border-b border-neutral-100 pl-4">Casa e Decoração</Link>
+            <Link to="/catalogo?categoria=beleza" className="text-neutral-700 py-2 border-b border-neutral-100 pl-4">Beleza</Link>
+            <Link to="/catalogo?categoria=esportes" className="text-neutral-700 py-2 border-b border-neutral-100 pl-4">Esportes</Link>
+            <Link to="/favoritos" className="text-neutral-700 py-2 border-b border-neutral-100">Favoritos ({wishlist.length})</Link>
           </nav>
         </div>
       </div>
