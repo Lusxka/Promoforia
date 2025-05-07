@@ -116,7 +116,7 @@ const Footer: React.FC = () => {
         {/* Newsletter */}
         <div className="border-t border-neutral-800 pt-8 pb-6 mb-6">
           <div className="max-w-xl mx-auto text-center">
-            <h3 className="text-lg font-semibold mb-2">Inscreva-se em nossa newsletter</h3>
+            <h3 className="text-lg font-semibold mb-2">Deixe seu comentário</h3>
             <p className="text-neutral-400 mb-4">
               Receba as melhores ofertas e novidades diretamente no seu e-mail.
             </p>

@@ -118,12 +118,12 @@ const CatalogPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">
-          {selectedCategory 
-            ? `Produtos: ${selectedCategory}` 
-            : searchQuery 
-              ? `Resultados para "${searchQuery}"` 
-              : 'Todos os Produtos'}
+        <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2 mt-10">
+      {selectedCategory
+        ? `Produtos: ${selectedCategory}`
+        : searchQuery
+          ? `Resultados para "${searchQuery}"`
+          : 'Todos os Produtos'}
         </h1>
         
         <p className="text-neutral-600 mb-8">

@@ -8,7 +8,7 @@ import { useWishlist } from '../../contexts/WishlistContext';
 // >>>>>> VERIFIQUE CUIDADOSAMENTE ESTES CAMINHOS <<<<<<
 // Assumindo que Header.tsx está em `src/components/layout/`, os caminhos relativos são estes:
 import logoClaro from './img/logo_branco.png'; // Logo para fundo transparente/escuro (Home topo)
-import logoEscuro from './img/logo_preto.png';  // Logo para fundo branco (rolado ou outras páginas)
+import logoEscuro from './img/logo_branco.png';  // Logo para fundo branco (rolado ou outras páginas)
 // Se Header.tsx estiver em outro lugar, ajuste o caminho relativo (`./img/...` ou `../layout/img/...`)
 
 const Header: React.FC = () => {

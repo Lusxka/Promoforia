@@ -58,7 +58,7 @@ const HeroSection: React.FC = () => {
           >
             <div className="relative bg-white/10 p-2 rounded-lg backdrop-blur-sm rotate-3 shadow-xl">
               <img
-                src= "src/components/layout/img/banner1.png"
+                src= "src/components/layout/img/banner.png"
                 alt="Produtos em destaque"
                 className="w-full h-auto rounded"
               />
@@ -69,7 +69,7 @@ const HeroSection: React.FC = () => {
 
             <div className="absolute -bottom-6 -right-6 bg-white/10 p-2 rounded-lg backdrop-blur-sm -rotate-3 shadow-xl">
               <img
-                src="https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                src="src\components\layout\img\banner_2.png"
                 alt="Ofertas especiais"
                 className="w-48 h-auto rounded"
               />

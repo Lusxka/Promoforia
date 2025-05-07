@@ -121,7 +121,9 @@ const HomePage: React.FC = () => {
        </section>
        <FeaturedProducts />
        <CategoriesSection />
-       <section className="py-16 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white">
+
+       {/* Container do Cupom de Desconto (opcional) ⬇ */}
+       {/* <section className="py-16 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white">
          <div className="container-custom">
            <motion.div
              initial={{ opacity: 0, scale: 0.95 }}
@@ -139,7 +141,7 @@ const HomePage: React.FC = () => {
              </a>
            </motion.div>
          </div>
-       </section>
+       </section> */}
 
 
       <Modal
