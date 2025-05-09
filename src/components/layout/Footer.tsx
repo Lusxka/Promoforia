@@ -1,6 +1,12 @@
+// src/components/layout/Footer.tsx
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Instagram, Facebook, Twitter, Youtube, Mail, Phone, MapPin, Send } from 'lucide-react'; // Adicionado Send icon
+
+// Importe o logo claro do mesmo local que o Header
+// VERIFIQUE SE ESTE CAMINHO ESTÁ CORRETO PARA SEU PROJETO
+import logoClaro from './img/logo_branco.png'; // Certifique-se de ter o logo branco aqui
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -68,10 +74,10 @@ const Footer: React.FC = () => {
     <footer className="bg-neutral-900 text-white pt-16 pb-8">
       <div className="container-custom">
 
-        {/* Seção de Comentário - AGORA EM PRIMEIRO */}
-        {/* Mantém a estrutura interna e o mx-auto para centralizar */}
-        {/* Ajuste de padding/margin conforme necessário - mantendo original por enquanto */}
-        {/* Removido border-t para que a borda fique ANTES da grade abaixo */}
+        {/* Seção de Comentário - AGORA EM PRIMEIRO */}
+        {/* Mantém a estrutura interna e o mx-auto para centralizar */}
+        {/* Ajuste de padding/margin conforme necessário - mantendo original por enquanto */}
+        {/* Removido border-t para que a borda fique ANTES da grade abaixo */}
         <div className="pt-8 pb-6 mb-6">
           <div className="max-w-xl mx-auto text-center">
             <h3 className="text-lg font-semibold mb-2">Deixe seu Comentário</h3>
@@ -134,14 +140,14 @@ const Footer: React.FC = () => {
         </div>
 
 
-        {/* GRID PRINCIPAL - AGORA DEPOIS DA SEÇÃO DE COMENTÁRIO */}
-        {/* Adiciona borda no topo para separar da seção de comentário */}
+        {/* GRID PRINCIPAL - AGORA DEPOIS DA SEÇÃO DE COMENTÁRIO */}
+        {/* Adiciona borda no topo para separar da seção de comentário */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 border-t border-neutral-800 pt-8">
           {/* Logo e Sobre */}
           <div>
             <Link to="/" className="flex items-center mb-4">
-              <ShoppingBag size={28} className="text-secondary-500 mr-2" />
-              <span className="text-xl font-bold text-white">Promoforia</span>
+              {/* Usando a logo branca importada */}
+              <img src={logoClaro} alt="Promoforia Logo" className="h-[72px] w-auto" /> {/* Ajuste o tamanho conforme necessário */}
             </Link>
             <p className="text-neutral-400 mb-4">
               Sua plataforma de compras online com os melhores produtos e ofertas exclusivas para você.

@@ -6,40 +6,43 @@ import { Product } from '../../types/Product';
 import ProductGridSkeleton from './ProductGridSkeleton';
 
 interface ProductGridProps {
-  products: Product[]; // Continua esperando um array como prop, mas verifica se é nulo/indefinido
-  loading?: boolean;
-  emptyMessage?: string;
+    products: Product[];
+    loading?: boolean;
+    emptyMessage?: string;
+    count?: number; // Adicionado para o esqueleto
 }
 
 const ProductGrid: React.FC<ProductGridProps> = ({
-  products,
-  loading = false,
-  emptyMessage = "Nenhum produto encontrado."
+    products,
+    loading = false,
+    emptyMessage = "Nenhum produto encontrado.",
+    count // Recebe a contagem para o esqueleto
 }) => {
-  if (loading) {
-    return <ProductGridSkeleton count={8} />;
-  }
+    if (loading) {
+        // Usar o count para o esqueleto, padrão 8 ou a contagem de produtos por página se relevante
+        return <ProductGridSkeleton count={count || 40} />; // Padrão 40 se count não for passado
+    }
 
-  // >>> ADIÇÃO PARA CORRIGIR TypeError: Verifica se products é um array válido antes de verificar o length
-  // Se products for undefined, null, ou não for um array, considera como vazio
-  if (!products || !Array.isArray(products) || products.length === 0) {
-    // O componente só chega aqui se não estiver loading (verificação acima)
+    // Verifica se products é um array válido antes de verificar o length
+    if (!products || !Array.isArray(products) || products.length === 0) {
+        return (
+            <div className="text-center py-12">
+                <p className="text-neutral-600">{emptyMessage}</p>
+            </div>
+        );
+    }
+
+    // Agora é seguro usar products.map porque garantimos que products é um array com items
     return (
-      <div className="text-center py-12">
-        <p className="text-neutral-600">{emptyMessage}</p>
-      </div>
+        // --- Classes ajustadas para 3 colunas em telas médias e maiores ---
+        // grid-cols-2: 2 colunas em telas pequenas
+        // md:grid-cols-3: 3 colunas em telas médias (md) e maiores
+        <div className="product-grid grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            {products.map((product, index) => (
+                product ? <ProductCard key={product._id || index} product={product} index={index} /> : null // Usar _id ou index como fallback para key
+            ))}
+        </div>
     );
-  }
-
-  // Agora é seguro usar products.map porque garantimos que products é um array com items
-  return (
-    <div className="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"> {/* Exemplo de classes grid, ajuste conforme seu CSS */}
-      {products.map((product, index) => (
-        // É uma boa prática adicionar uma verificação básica para garantir que o product em si não é nulo/indefinido
-        product ? <ProductCard key={product._id} product={product} index={index} /> : null
-      ))}
-    </div>
-  );
 };
 
 export default ProductGrid;
