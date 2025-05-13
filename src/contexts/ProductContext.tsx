@@ -52,7 +52,8 @@ interface ProductContextType {
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
-const API_BASE_URL = import.meta.env.VITE_APP_API_URL || 'http://localhost:4000';
+// Update API_BASE_URL to use the proxy configuration from vite.config.ts
+const API_BASE_URL = '/api';
 
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [processedProducts, setProcessedProducts] = useState<Product[]>([]);
@@ -155,11 +156,11 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const seen = new Set<string>();
         return (
             products
-                .filter(p => p.rating > 0 && p.reviewCount >= 5) // Filtra produtos com pelo menos 5 avaliações
+                .filter(p => p.rating > 0 && p.reviewCount >= 5)
                 .sort((a, b) => {
-                    const scoreA = a.rating * Math.log(a.reviewCount + 1); // Pondera nota e quantidade de avaliações
+                    const scoreA = a.rating * Math.log(a.reviewCount + 1);
                     const scoreB = b.rating * Math.log(b.reviewCount + 1);
-                    return scoreB - scoreA; // Ordem decrescente
+                    return scoreB - scoreA;
                 })
                 .filter(p => {
                     const key = `${p.name}-${p.sellerName}`;
@@ -176,8 +177,10 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setError(null);
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/products/all-collections`);
-            if (!response.ok) throw new Error(`Falha ao buscar todos os produtos. Status: ${response.status}`);
+            const response = await fetch(`${API_BASE_URL}/products/all-collections`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const data = await response.json();
 
@@ -200,14 +203,20 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const fetchProductsByCollectionName = useCallback(async (collectionNameKey: keyof typeof COLLECTION_MAP): Promise<Product[]> => {
         const actualCollectionName = COLLECTION_MAP[collectionNameKey];
         try {
-            const response = await fetch(`${API_BASE_URL}/api/products/collection/${actualCollectionName}`);
-            if (!response.ok) throw new Error(`Falha ao buscar coleção ${actualCollectionName}`);
+            const response = await fetch(`${API_BASE_URL}/products/collection/${actualCollectionName}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const data = await response.json();
-            return Array.isArray(data) ? data.map(processBackendProduct).filter(Boolean) as Product[] : [];
+            if (!Array.isArray(data)) {
+                throw new Error("Resposta da API não é um array");
+            }
+
+            return data.map(processBackendProduct).filter(Boolean) as Product[];
         } catch (err) {
             console.error(`Erro na busca da coleção ${actualCollectionName}:`, err);
-            return [];
+            throw new Error(`Falha ao buscar produtos da coleção ${actualCollectionName}`);
         }
     }, [processBackendProduct]);
 
