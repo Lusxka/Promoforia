@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.tsx';
 import './index.css';
 import { CartProvider } from './contexts/CartContext';
-import { WishlistProvider } from './contexts/WishlistProvider';
+import { WishlistProvider } from './contexts/WishlistContext';
 import { ProductProvider } from './contexts/ProductContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 
