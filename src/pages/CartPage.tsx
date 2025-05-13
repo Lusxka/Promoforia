@@ -37,7 +37,7 @@ const CartPage: React.FC = () => {
           transition={{ duration: 0.4 }}
           className="text-center max-w-md"
         >
-          <div className="mb-6 w-20 h-20 mx-auto bg-neutral-100 rounded-full flex items-center justify-center">
+          <div className="mb-6 w-20 h-20 mt-20 mx-auto bg-neutral-100 rounded-full flex items-center justify-center">
             <ShoppingBag size={32} className="text-neutral-400" />
           </div>
           <h1 className="text-2xl font-bold text-neutral-900 mb-3">Seu carrinho está vazio</h1>
@@ -59,7 +59,7 @@ const CartPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">
+        <h1 className="text-2xl md:text-3xl mt-20 font-bold text-neutral-900 mb-2">
           Carrinho de Compras
         </h1>
         <p className="text-neutral-600 mb-8">

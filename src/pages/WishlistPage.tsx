@@ -33,7 +33,7 @@ const WishlistPage: React.FC = () => {
           transition={{ duration: 0.4 }}
           className="text-center max-w-md"
         >
-          <div className="mb-6 w-20 h-20 mx-auto bg-neutral-100 rounded-full flex items-center justify-center">
+          <div className="mb-6 w-20 h-20 mt-20 mx-auto bg-neutral-100 rounded-full flex items-center justify-center">
             <Heart size={32} className="text-neutral-400" />
           </div>
           <h1 className="text-2xl font-bold text-neutral-900 mb-3">Sua lista de favoritos está vazia</h1>
@@ -56,7 +56,7 @@ const WishlistPage: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="mb-8"
       >
-        <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">
+        <h1 className="text-2xl md:text-3xl mt-20 font-bold text-neutral-900 mb-2">
           Meus Favoritos
         </h1>
         <p className="text-neutral-600">
