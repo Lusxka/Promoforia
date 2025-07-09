@@ -14,18 +14,16 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
-  // Adiciona um valor padrão `[]` para `cartItems` para evitar o erro na primeira renderização
   const { cartItems = [], addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
 
-  // A verificação agora é segura, mesmo que cartItems seja inicialmente undefined
   const isInCart = cartItems.some(item => item._id === product._id);
   const inWishlist = isInWishlist(product._id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isInCart) return; // Impede adicionar novamente se já estiver no carrinho
+    if (isInCart) return;
     addToCart(product, 1);
   };
 
@@ -56,7 +54,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
         <Star
           key={i}
           size={16}
-          className={`inline-block mr-0.5 ${i <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-neutral-300 fill-transparent'}`}
+          // CORREÇÃO DARK MODE: Cor da estrela vazia
+          className={`inline-block mr-0.5 ${i <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-neutral-300 dark:text-neutral-600 fill-transparent'}`}
         />
       );
     }
@@ -74,7 +73,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
       animate="visible"
       variants={cardVariants}
       className={clsx(
-        "product-card group flex flex-col rounded-lg shadow-sm overflow-hidden bg-white transition-all duration-300",
+        // CORREÇÃO DARK MODE: Fundo do card
+        "product-card group flex flex-col rounded-lg shadow-sm overflow-hidden bg-white dark:bg-neutral-800 transition-all duration-300",
         {
           'border-2 border-emerald-500 shadow-lg': isInCart,
           'hover:shadow-md': !isInCart,
@@ -83,7 +83,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
     >
       <Link to={productLink} className="block h-full flex flex-col">
         {/* Image Section */}
-        <div className="relative pb-[100%] overflow-hidden rounded-t-lg bg-neutral-100 flex-shrink-0">
+        {/* CORREÇÃO DARK MODE: Fundo da imagem e ícone placeholder */}
+        <div className="relative pb-[100%] overflow-hidden rounded-t-lg bg-neutral-100 dark:bg-neutral-700 flex-shrink-0">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -91,7 +92,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
               className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="absolute inset-0 w-full h-full flex items-center justify-center text-neutral-400">
+            <div className="absolute inset-0 w-full h-full flex items-center justify-center text-neutral-400 dark:text-neutral-500">
               <ImageIcon size={48} />
             </div>
           )}
@@ -116,40 +117,42 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
           </div>
 
           {/* Wishlist Button */}
+          {/* CORREÇÃO DARK MODE: Botão de favoritos */}
           <button
             onClick={handleToggleWishlist}
-            className="absolute bottom-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-neutral-100 transition-colors duration-200 z-10"
+            className="absolute bottom-2 right-2 p-2 bg-white dark:bg-neutral-700 rounded-full shadow-md hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors duration-200 z-10"
             aria-label={inWishlist ? "Remover dos favoritos" : "Adicionar aos favoritos"}
           >
             <Heart
               size={18}
-              className={inWishlist ? 'text-error-500 fill-error-500' : 'text-neutral-400'}
+              className={inWishlist ? 'text-error-500 fill-error-500' : 'text-neutral-400 dark:text-neutral-400'}
             />
           </button>
         </div>
 
         {/* Content Section */}
+        {/* CORREÇÃO DARK MODE: Cores dos textos de conteúdo */}
         <div className="p-4 flex flex-col flex-grow">
           <div className="mb-1 flex items-center">
             <div className="flex items-center">{renderStars()}</div>
-            <span className="text-xs text-neutral-500 ml-1">({product.reviewCount !== undefined ? product.reviewCount : 0})</span>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400 ml-1">({product.reviewCount !== undefined ? product.reviewCount : 0})</span>
           </div>
 
-          <h3 className="font-medium text-neutral-800 mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors duration-200">
+          <h3 className="font-medium text-neutral-800 dark:text-neutral-100 mb-1 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">
             {product.name}
           </h3>
 
-          <p className="text-neutral-600 text-sm mb-3 line-clamp-2 flex-grow">
+          <p className="text-neutral-600 dark:text-neutral-300 text-sm mb-3 line-clamp-2 flex-grow">
             {product.description || 'Sem descrição disponível.'}
           </p>
 
           <div className="mt-auto">
             <div className="flex items-baseline mb-3">
-              <span className="text-lg font-semibold text-neutral-900">
+              <span className="text-lg font-semibold text-neutral-900 dark:text-white">
                 {displayPrice}
               </span>
               {displayOriginalPrice && (
-                <span className="ml-2 text-sm text-neutral-500 line-through">
+                <span className="ml-2 text-sm text-neutral-500 dark:text-neutral-400 line-through">
                   {displayOriginalPrice}
                 </span>
               )}
@@ -160,7 +163,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
                 onClick={handleAddToCart}
                 disabled={isInCart}
                 className={clsx(
-                  "button-primary w-full text-center",
+                  "button-primary w-full text-center", // A classe 'button-primary' deve ser tratada no CSS global
                   {
                     'bg-emerald-600 hover:bg-emerald-600 cursor-not-allowed': isInCart,
                   }
@@ -171,7 +174,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
             </div>
           </div>
         </div>
-      </Link> {/* This closing tag was corrected from </a-link> */}
+      </Link>
     </motion.div>
   );
 };

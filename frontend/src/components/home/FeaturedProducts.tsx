@@ -6,14 +6,13 @@ import ProductGrid from '../products/ProductGrid';
 
 const FeaturedProducts: React.FC = () => {
     const { featuredProducts, loading, error } = useProducts();
-
-    // Limita a exibição a 8 produtos para um layout mais limpo e focado.
     const displayedProducts = featuredProducts.slice(0, 8);
 
     if (error) {
         return (
-            <section className="section-padding bg-white">
-                <div className="container-custom text-center text-error-500">
+            // CORREÇÃO DARK MODE: Fundo e cor do texto de erro
+            <section className="section-padding bg-white dark:bg-neutral-900">
+                <div className="container-custom text-center text-error-500 dark:text-error-400">
                     <p>{error}</p>
                 </div>
             </section>
@@ -21,7 +20,8 @@ const FeaturedProducts: React.FC = () => {
     }
 
     return (
-        <section className="section-padding bg-white">
+        // CORREÇÃO DARK MODE: Fundo da seção e cores dos textos
+        <section className="section-padding bg-white dark:bg-neutral-900">
             <div className="container-custom">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -30,16 +30,15 @@ const FeaturedProducts: React.FC = () => {
                     transition={{ duration: 0.6 }}
                 >
                     <div className="text-center mb-12">
-                        <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-4">
+                        <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white mb-4">
                             Nossos Produtos em Destaque
                         </h2>
-                        <p className="text-neutral-600 max-w-2xl mx-auto">
+                        <p className="text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto">
                             Descubra os produtos preferidos de nossos clientes. Uma seleção especial com as melhores avaliações.
                         </p>
                     </div>
                 </motion.div>
 
-                {/* Passa a lista limitada de produtos para o grid */}
                 <ProductGrid products={displayedProducts} loading={loading} emptyMessage="Nenhum produto em destaque encontrado." />
 
                 <motion.div
@@ -49,6 +48,7 @@ const FeaturedProducts: React.FC = () => {
                     transition={{ duration: 0.6, delay: 0.3 }}
                     className="text-center mt-12"
                 >
+                    {/* O botão usa a classe 'button-outline', que já deve ter sido corrigida no seu CSS global. */}
                     <Link to="/catalogo" className="button-outline">
                         Ver Todos os Produtos
                     </Link>
