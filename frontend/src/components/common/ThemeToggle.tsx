@@ -8,13 +8,13 @@ const ThemeToggle: React.FC = () => {
   return (
     <button
       onClick={toggleDarkMode}
-      className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+      className="p-2 rounded-full hover:bg-white/10 dark:hover:bg-neutral-800 transition-colors"
       aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {isDarkMode ? (
-        <Sun size={20} className="text-neutral-100" />
+        <Sun size={20} className="text-yellow-400" />
       ) : (
-        <Moon size={20} className="text-neutral-700" />
+        <Moon size={20} className="text-white" />
       )}
     </button>
   );
