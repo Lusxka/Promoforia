@@ -10,7 +10,6 @@ const HeroSection: React.FC = () => {
   return (
     <div className="relative text-white pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
       {/* Vídeo de fundo com looping infinito */}
-      {/* Removemos o overlay azul para o vídeo ficar visível */}
       <div className="absolute inset-0 z-0">
         <video
           key={isDarkMode ? 'dark' : 'light'}
@@ -18,7 +17,7 @@ const HeroSection: React.FC = () => {
           loop
           muted
           playsInline
-          className="w-full h-full object-cover opacity-1000" // Aumentamos a opacidade para o vídeo ser mais visível
+          className="w-full h-full object-cover"
           src={isDarkMode ? "src/components/layout/img/fundoDark.mp4" : "src/components/layout/img/fundo.mp4"}
         >
           Seu navegador não suporta vídeo em HTML5.
