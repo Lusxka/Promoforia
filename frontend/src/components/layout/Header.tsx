@@ -9,17 +9,23 @@ import logoClaro from './img/logo_branco.png';
 import logoEscuro from './img/logo_preto.png';
 
 const headerCategories = [
-    { name: "Relâmpago", path: "/categorias/relampago" },
-    { name: "Ofertas", path: "/categorias/ofertas" },
-    { name: "Menos de R$100", path: "/categorias/menos-de-100" },
-    { name: "Compra do Mês", path: "/categorias/compra-do-mes" },
-    { name: "Moda", path: "/categorias/moda" },
+  { name: 'Relâmpago', path: '/categorias/relampago' },
+  { name: 'Ofertas', path: '/categorias/ofertas' },
+  { name: 'Menos de R$100', path: '/categorias/menos-de-100' },
+  { name: 'Compra do Mês', path: '/categorias/compra-do-mes' },
+  { name: 'Moda', path: '/categorias/moda' },
 ];
+
+/* ---------- Tipo auxiliar ---------- */
+type ToastData =
+  | { context: 'cart' | 'wishlist'; action: 'added' | 'removed' }
+  | null;
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [toast, setToast] = useState<ToastData>(null);
 
   const { getCartCount } = useCart();
   const { wishlist } = useWishlist();
@@ -27,16 +33,44 @@ const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  /* ---------- Contadores anteriores (null no primeiro render) ---------- */
+  const [prevCartCount, setPrevCartCount] = useState<number | null>(null);
+  const [prevWishlistCount, setPrevWishlistCount] = useState<number | null>(null);
+
+  /* ---------- Scroll ---------- */
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
+  /* ---------- Fecha menu mobile ao navegar ---------- */
+  useEffect(() => setIsMobileMenuOpen(false), [location.pathname]);
 
+  /* ---------- Monitora carrinho ---------- */
+  const cartCount = getCartCount();
+  useEffect(() => {
+    if (prevCartCount !== null && cartCount !== prevCartCount) {
+      setToast({ context: 'cart', action: cartCount > prevCartCount ? 'added' : 'removed' });
+      setTimeout(() => setToast(null), 3000);
+    }
+    setPrevCartCount(cartCount);
+  }, [cartCount, prevCartCount]);
+
+  /* ---------- Monitora favoritos ---------- */
+  const wishlistCount = wishlist.length;
+  useEffect(() => {
+    if (prevWishlistCount !== null && wishlistCount !== prevWishlistCount) {
+      setToast({
+        context: 'wishlist',
+        action: wishlistCount > prevWishlistCount ? 'added' : 'removed',
+      });
+      setTimeout(() => setToast(null), 3000);
+    }
+    setPrevWishlistCount(wishlistCount);
+  }, [wishlistCount, prevWishlistCount]);
+
+  /* ---------- Handlers ---------- */
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -48,96 +82,247 @@ const Header: React.FC = () => {
     }
   };
 
-  const useDarkColorsForOtherElements = isScrolled || location.pathname !== '/';
-  const textColorClass = useDarkColorsForOtherElements ? 'text-neutral-700' : 'text-white';
-  const iconColorClass = useDarkColorsForOtherElements ? 'text-neutral-700' : 'text-white';
-  const hoverTextColorClass = !useDarkColorsForOtherElements ? 'hover:text-neutral-300' : 'hover:text-primary-600';
-  const useDarkLogoImage = isScrolled || location.pathname !== '/';
+  /* ---------- Estilos dinâmicos ---------- */
+  const useDark = isScrolled || location.pathname !== '/';
+  const textColor = useDark ? 'text-neutral-700 dark:text-neutral-200' : 'text-white';
+  const iconColor = useDark ? 'text-neutral-700 dark:text-neutral-200' : 'text-white';
+  const hoverText = useDark
+    ? 'hover:text-primary-600 dark:hover:text-primary-400'
+    : 'hover:text-neutral-300';
+
+  /* ---------- Renderiza toast ---------- */
+  const renderToast = () => {
+    if (!toast) return null;
+    const isAdd = toast.action === 'added';
+    const bgColor = isAdd ? 'bg-green-600' : 'bg-red-600';
+    const message =
+      toast.context === 'cart'
+        ? isAdd
+          ? 'Adicionado ao carrinho!'
+          : 'Removido do carrinho!'
+        : isAdd
+        ? 'Adicionado aos favoritos!'
+        : 'Removido dos favoritos!';
+    const Icon = toast.context === 'cart' ? ShoppingCart : Heart;
+    return (
+      <div
+        className={`fixed top-4 right-4 ${bgColor} text-white px-4 py-2 rounded-md shadow-lg flex items-center gap-2 animate-toast z-[9999]`}
+      >
+        <Icon size={16} />
+        <span className="text-sm font-medium">{message}</span>
+      </div>
+    );
+  };
 
   return (
-    <header className={`fixed w-full z-50 transition-all duration-300 ${useDarkColorsForOtherElements ? 'bg-white dark:bg-neutral-900 shadow-md py-2' : 'bg-transparent py-4'}`}>
-      <div className="container-custom flex items-center justify-between">
-        <Link to="/" className="flex items-center ml-4">
-          <img src={useDarkLogoImage ? logoEscuro : logoClaro} alt="Promoforia Logo" className="h-[72px] w-auto transition-opacity duration-300" />
-        </Link>
+    <>
+      {/* ---------- Toast global ---------- */}
+      {renderToast()}
 
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link to="/" className={`${textColorClass} ${hoverTextColorClass} font-medium`}>Início</Link>
-          <Link to="/catalogo" className={`${textColorClass} ${hoverTextColorClass} font-medium`}>Produtos</Link>
+      <header
+        className={`fixed w-full z-50 transition-all duration-300 ${
+          useDark ? 'bg-white dark:bg-neutral-900 shadow-md py-2' : 'bg-transparent py-4'
+        }`}
+      >
+        <div className="container-custom flex items-center justify-between">
+          {/* ---------- Logo ---------- */}
+          <Link to="/" className="flex items-center ml-4">
+            <img
+              src={useDark ? logoEscuro : logoClaro}
+              alt="Promoforia Logo"
+              className="h-[72px] w-auto transition-opacity duration-300"
+            />
+          </Link>
 
-          <div className="group relative">
-            <button className={`${textColorClass} ${hoverTextColorClass} font-medium flex items-center`}>
-              Categorias
-            </button>
-            <div className="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg overflow-hidden z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-              {headerCategories.map(category => (
+          {/* ---------- Navegação desktop ---------- */}
+          <nav className="hidden md:flex items-center space-x-6">
+            <Link to="/" className={`${textColor} ${hoverText} font-medium transition-colors`}>
+              Início
+            </Link>
+            <Link
+              to="/catalogo"
+              className={`${textColor} ${hoverText} font-medium transition-colors`}
+            >
+              Produtos
+            </Link>
+
+            <div className="group relative">
+              <button className={`${textColor} ${hoverText} font-medium flex items-center`}>
+                Categorias
+              </button>
+              <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-neutral-800 rounded-md shadow-lg overflow-hidden z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                {headerCategories.map((c) => (
+                  <Link
+                    key={c.name}
+                    to={c.path}
+                    className="block px-4 py-3 text-sm text-neutral-700 dark:text-neutral-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  >
+                    {c.name}
+                  </Link>
+                ))}
                 <Link
-                  key={category.name}
-                  to={category.path}
-                  className="block px-4 py-3 text-sm text-neutral-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
-                >
-                  {category.name}
-                </Link>
-              ))}
-              <Link
                   to="/catalogo"
-                  className="block px-4 py-3 text-sm font-medium text-primary-600 bg-neutral-50 hover:bg-primary-50 hover:text-primary-700 transition-colors border-t border-neutral-200"
+                  className="block px-4 py-3 text-sm font-medium text-primary-600 dark:text-primary-400 bg-neutral-50 dark:bg-neutral-700 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-700 dark:hover:text-primary-300 transition-colors border-t border-neutral-200 dark:border-neutral-600"
                 >
                   Ver Todos os Produtos
                 </Link>
+              </div>
             </div>
+          </nav>
+
+          {/* ---------- Busca desktop ---------- */}
+          <form
+            onSubmit={handleSearchSubmit}
+            className="hidden md:flex relative mx-4 flex-grow max-w-md"
+          >
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Buscar produtos..."
+              className="w-full px-4 py-2 rounded-full border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500 text-neutral-700 dark:text-neutral-200 placeholder-neutral-500 dark:placeholder-neutral-400"
+            />
+            <button
+              type="submit"
+              className={`absolute right-3 top-1/2 -translate-y-1/2 ${iconColor} ${hoverText}`}
+            >
+              <Search size={18} />
+            </button>
+          </form>
+
+          {/* ---------- Ícones desktop ---------- */}
+          <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
+
+            {/* Favoritos */}
+            <Link to="/favoritos" className={`relative p-2 ${iconColor} ${hoverText}`}>
+              <Heart size={22} />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-secondary-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+
+            {/* Carrinho */}
+            <Link to="/carrinho" className={`relative p-2 ${iconColor} ${hoverText}`}>
+              <ShoppingCart size={22} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-secondary-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
           </div>
-        </nav>
 
-        <form onSubmit={handleSearchSubmit} className="hidden md:flex relative mx-4 flex-grow max-w-md">
-           <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Buscar produtos..." className="w-full px-4 py-2 rounded-full border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500 text-neutral-700"/>
-           <button type="submit" className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${iconColorClass} ${hoverTextColorClass}`}> <Search size={18} /> </button>
-        </form>
+          {/* ---------- Ícones mobile ---------- */}
+          <div className="flex md:hidden items-center space-x-3">
+            <ThemeToggle />
 
-        <div className="hidden md:flex items-center space-x-4">
-          <ThemeToggle />
-          <Link to="/favoritos" className={`relative p-2 ${iconColorClass} ${hoverTextColorClass} transition-colors`}>
-            <Heart size={22} />
-            {wishlist.length > 0 && <span className="absolute -top-1 -right-1 bg-secondary-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">{wishlist.length}</span>}
-          </Link>
-          <Link to="/carrinho" className={`relative p-2 ${iconColorClass} ${hoverTextColorClass} transition-colors`}>
-            <ShoppingCart size={22} />
-            {getCartCount() > 0 && <span className="absolute -top-1 -right-1 bg-secondary-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">{getCartCount()}</span>}
-          </Link>
+            {/* Carrinho (mobile) */}
+            <Link to="/carrinho" className={`relative p-2 ${iconColor} ${hoverText}`}>
+              <ShoppingCart size={24} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-secondary-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+
+            <button
+              onClick={toggleMobileMenu}
+              className={`p-2 ${iconColor} focus:outline-none transition-colors`}
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
-        <div className="flex md:hidden items-center space-x-3">
-          <ThemeToggle />
-          <Link to="/carrinho" className={`relative p-2 ${iconColorClass} ${hoverTextColorClass} transition-colors`}>
-            <ShoppingCart size={24} />
-            {getCartCount() > 0 && <span className="absolute -top-1 -right-1 bg-secondary-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">{getCartCount()}</span>}
-          </Link>
-          <button onClick={toggleMobileMenu} className={`p-2 ${iconColorClass} focus:outline-none`}>
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </div>
-
-      <div className={`md:hidden bg-white absolute w-full shadow-md transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 visible max-h-screen' : 'opacity-0 invisible max-h-0'} overflow-hidden`}>
-        <div className="container-custom py-4 flex flex-col space-y-4">
+        {/* ---------- Menu mobile ---------- */}
+        <div
+          className={`md:hidden bg-white dark:bg-neutral-900 absolute w-full shadow-md transition-all duration-300 ${
+            isMobileMenuOpen ? 'opacity-100 visible max-h-screen' : 'opacity-0 invisible max-h-0'
+          } overflow-hidden`}
+        >
+          <div className="container-custom py-4 flex flex-col space-y-4">
             <form onSubmit={handleSearchSubmit} className="flex relative">
-                <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Buscar produtos..." className="w-full px-4 py-2 rounded-full border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-300 text-neutral-700"/>
-                <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-500"> <Search size={18} /> </button>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Buscar produtos..."
+                className="w-full px-4 py-2 rounded-full border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 text-neutral-700 dark:text-neutral-200 placeholder-neutral-500 dark:placeholder-neutral-400"
+              />
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
+              >
+                <Search size={18} />
+              </button>
             </form>
 
             <nav className="flex flex-col space-y-1">
-              <>
-                <Link to="/" className="text-neutral-700 py-3 border-b border-neutral-100 text-base" onClick={toggleMobileMenu}>Início</Link>
-                <Link to="/catalogo" className="text-neutral-700 py-3 border-b border-neutral-100 text-base" onClick={toggleMobileMenu}>Todos os Produtos</Link>
-                {headerCategories.map(category => (
-                    <Link key={category.name} to={category.path} className="text-neutral-700 py-3 border-b border-neutral-100 text-base pl-4" onClick={toggleMobileMenu}>{category.name}</Link>
-                ))}
-                <Link to="/favoritos" className="text-neutral-700 py-3 border-b border-neutral-100 text-base" onClick={toggleMobileMenu}>Favoritos ({wishlist.length})</Link>
-              </>
+              <Link
+                to="/"
+                className="text-neutral-700 dark:text-neutral-200 py-3 border-b border-neutral-100 dark:border-neutral-700 text-base hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                onClick={toggleMobileMenu}
+              >
+                Início
+              </Link>
+              <Link
+                to="/catalogo"
+                className="text-neutral-700 dark:text-neutral-200 py-3 border-b border-neutral-100 dark:border-neutral-700 text-base hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                onClick={toggleMobileMenu}
+              >
+                Todos os Produtos
+              </Link>
+              {headerCategories.map((c) => (
+                <Link
+                  key={c.name}
+                  to={c.path}
+                  className="pl-4 text-neutral-700 dark:text-neutral-200 py-3 border-b border-neutral-100 dark:border-neutral-700 text-base hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  onClick={toggleMobileMenu}
+                >
+                  {c.name}
+                </Link>
+              ))}
+              <Link
+                to="/favoritos"
+                className="text-neutral-700 dark:text-neutral-200 py-3 border-b border-neutral-100 dark:border-neutral-700 text-base hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                onClick={toggleMobileMenu}
+              >
+                Favoritos ({wishlistCount})
+              </Link>
             </nav>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* ---------- Animação toast ---------- */}
+      <style jsx>{`
+        @keyframes toast {
+          0% {
+            opacity: 0;
+            transform: translateX(100%) scale(0.95);
+          }
+          15% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+          }
+          85% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: translateX(100%) scale(0.95);
+          }
+        }
+        .animate-toast {
+          animation: toast 3s ease-in-out forwards;
+        }
+      `}</style>
+    </>
   );
 };
 
