@@ -73,17 +73,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
       animate="visible"
       variants={cardVariants}
       className={clsx(
+<<<<<<< HEAD
         // CORREÇÃO DARK MODE: Fundo do card
+=======
+>>>>>>> 142ecb79c444fcb7f012c33773db345c62915b46
         "product-card group flex flex-col rounded-lg shadow-sm overflow-hidden bg-white dark:bg-neutral-800 transition-all duration-300",
         {
-          'border-2 border-emerald-500 shadow-lg': isInCart,
-          'hover:shadow-md': !isInCart,
+          'bg-emerald-50 dark:bg-emerald-950 border-2 border-emerald-600 shadow-md': isInCart,
+          'hover:shadow-md hover:border-neutral-200 dark:hover:border-neutral-700': !isInCart,
         }
       )}
     >
       <Link to={productLink} className="block h-full flex flex-col">
         {/* Image Section */}
+<<<<<<< HEAD
         {/* CORREÇÃO DARK MODE: Fundo da imagem e ícone placeholder */}
+=======
+>>>>>>> 142ecb79c444fcb7f012c33773db345c62915b46
         <div className="relative pb-[100%] overflow-hidden rounded-t-lg bg-neutral-100 dark:bg-neutral-700 flex-shrink-0">
           {imageUrl ? (
             <img
@@ -120,35 +126,62 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
           {/* CORREÇÃO DARK MODE: Botão de favoritos */}
           <button
             onClick={handleToggleWishlist}
+<<<<<<< HEAD
             className="absolute bottom-2 right-2 p-2 bg-white dark:bg-neutral-700 rounded-full shadow-md hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors duration-200 z-10"
+=======
+            className="absolute bottom-2 right-2 p-2 bg-white dark:bg-neutral-800 rounded-full shadow-md hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200 z-10"
+>>>>>>> 142ecb79c444fcb7f012c33773db345c62915b46
             aria-label={inWishlist ? "Remover dos favoritos" : "Adicionar aos favoritos"}
           >
             <Heart
               size={18}
+<<<<<<< HEAD
               className={inWishlist ? 'text-error-500 fill-error-500' : 'text-neutral-400 dark:text-neutral-400'}
+=======
+              className={inWishlist ? 'text-error-500 fill-error-500' : 'text-neutral-400 dark:text-neutral-500'}
+>>>>>>> 142ecb79c444fcb7f012c33773db345c62915b46
             />
           </button>
         </div>
 
+<<<<<<< HEAD
         {/* Content Section */}
         {/* CORREÇÃO DARK MODE: Cores dos textos de conteúdo */}
         <div className="p-4 flex flex-col flex-grow">
           <div className="mb-1 flex items-center">
+=======
+        {/* Content Section - AGORA p-2 e margens minimizadas */}
+        <div className="p-2 flex flex-col flex-grow"> {/* De px-3 py-2.5 para p-2 */}
+          <div className="mb-0 flex items-center"> {/* De mb-0.5 para mb-0 */}
+>>>>>>> 142ecb79c444fcb7f012c33773db345c62915b46
             <div className="flex items-center">{renderStars()}</div>
             <span className="text-xs text-neutral-500 dark:text-neutral-400 ml-1">({product.reviewCount !== undefined ? product.reviewCount : 0})</span>
           </div>
 
+<<<<<<< HEAD
           <h3 className="font-medium text-neutral-800 dark:text-neutral-100 mb-1 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">
             {product.name}
           </h3>
 
           <p className="text-neutral-600 dark:text-neutral-300 text-sm mb-3 line-clamp-2 flex-grow">
+=======
+          <h3 className="font-medium text-neutral-800 dark:text-neutral-200 mb-0 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200"> {/* De mb-0.5 para mb-0 */}
+            {product.name}
+          </h3>
+
+          <p className="text-neutral-600 dark:text-neutral-400 text-xs mb-1 line-clamp-2 flex-grow"> {/* De mb-2 para mb-1 */}
+>>>>>>> 142ecb79c444fcb7f012c33773db345c62915b46
             {product.description || 'Sem descrição disponível.'}
           </p>
 
           <div className="mt-auto">
+<<<<<<< HEAD
             <div className="flex items-baseline mb-3">
               <span className="text-lg font-semibold text-neutral-900 dark:text-white">
+=======
+            <div className="flex items-baseline mb-1"> {/* De mb-2 para mb-1 */}
+              <span className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
+>>>>>>> 142ecb79c444fcb7f012c33773db345c62915b46
                 {displayPrice}
               </span>
               {displayOriginalPrice && (
