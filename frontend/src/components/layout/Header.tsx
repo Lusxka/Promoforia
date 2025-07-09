@@ -101,8 +101,8 @@ const Header: React.FC = () => {
           ? 'Adicionado ao carrinho!'
           : 'Removido do carrinho!'
         : isAdd
-        ? 'Adicionado aos favoritos!'
-        : 'Removido dos favoritos!';
+          ? 'Adicionado aos favoritos!'
+          : 'Removido dos favoritos!';
     const Icon = toast.context === 'cart' ? ShoppingCart : Heart;
     return (
       <div
@@ -299,7 +299,8 @@ const Header: React.FC = () => {
       </header>
 
       {/* ---------- Animação toast ---------- */}
-      <style jsx>{`
+      {/* O atributo 'jsx' foi removido desta tag <style> */}
+      <style>{`
         @keyframes toast {
           0% {
             opacity: 0;
