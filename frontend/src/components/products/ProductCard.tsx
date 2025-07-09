@@ -54,7 +54,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
         <Star
           key={i}
           size={16}
-          className={`inline-block mr-0.5 ${i <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-neutral-300 fill-transparent'}`}
+          // CORREÇÃO DARK MODE: Cor da estrela vazia
+          className={`inline-block mr-0.5 ${i <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-neutral-300 dark:text-neutral-600 fill-transparent'}`}
         />
       );
     }
@@ -72,15 +73,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
       animate="visible"
       variants={cardVariants}
       className={clsx(
+        // CORREÇÃO DARK MODE: Fundo do card
         "product-card group flex flex-col rounded-lg shadow-sm overflow-hidden bg-white dark:bg-neutral-800 transition-all duration-300",
         {
-          'bg-emerald-50 dark:bg-emerald-950 border-2 border-emerald-600 shadow-md': isInCart,
-          'hover:shadow-md hover:border-neutral-200 dark:hover:border-neutral-700': !isInCart,
+          'border-2 border-emerald-500 shadow-lg': isInCart,
+          'hover:shadow-md': !isInCart,
         }
       )}
     >
       <Link to={productLink} className="block h-full flex flex-col">
         {/* Image Section */}
+        {/* CORREÇÃO DARK MODE: Fundo da imagem e ícone placeholder */}
         <div className="relative pb-[100%] overflow-hidden rounded-t-lg bg-neutral-100 dark:bg-neutral-700 flex-shrink-0">
           {imageUrl ? (
             <img
@@ -89,7 +92,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
               className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="absolute inset-0 w-full h-full flex items-center justify-center text-neutral-400">
+            <div className="absolute inset-0 w-full h-full flex items-center justify-center text-neutral-400 dark:text-neutral-500">
               <ImageIcon size={48} />
             </div>
           )}
@@ -114,40 +117,42 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
           </div>
 
           {/* Wishlist Button */}
+          {/* CORREÇÃO DARK MODE: Botão de favoritos */}
           <button
             onClick={handleToggleWishlist}
-            className="absolute bottom-2 right-2 p-2 bg-white dark:bg-neutral-800 rounded-full shadow-md hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200 z-10"
+            className="absolute bottom-2 right-2 p-2 bg-white dark:bg-neutral-700 rounded-full shadow-md hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors duration-200 z-10"
             aria-label={inWishlist ? "Remover dos favoritos" : "Adicionar aos favoritos"}
           >
             <Heart
               size={18}
-              className={inWishlist ? 'text-error-500 fill-error-500' : 'text-neutral-400 dark:text-neutral-500'}
+              className={inWishlist ? 'text-error-500 fill-error-500' : 'text-neutral-400 dark:text-neutral-400'}
             />
           </button>
         </div>
 
-        {/* Content Section - AGORA p-2 e margens minimizadas */}
-        <div className="p-2 flex flex-col flex-grow"> {/* De px-3 py-2.5 para p-2 */}
-          <div className="mb-0 flex items-center"> {/* De mb-0.5 para mb-0 */}
+        {/* Content Section */}
+        {/* CORREÇÃO DARK MODE: Cores dos textos de conteúdo */}
+        <div className="p-4 flex flex-col flex-grow">
+          <div className="mb-1 flex items-center">
             <div className="flex items-center">{renderStars()}</div>
-            <span className="text-xs text-neutral-500 ml-1">({product.reviewCount !== undefined ? product.reviewCount : 0})</span>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400 ml-1">({product.reviewCount !== undefined ? product.reviewCount : 0})</span>
           </div>
 
-          <h3 className="font-medium text-neutral-800 dark:text-neutral-200 mb-0 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200"> {/* De mb-0.5 para mb-0 */}
+          <h3 className="font-medium text-neutral-800 dark:text-neutral-100 mb-1 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">
             {product.name}
           </h3>
 
-          <p className="text-neutral-600 dark:text-neutral-400 text-xs mb-1 line-clamp-2 flex-grow"> {/* De mb-2 para mb-1 */}
+          <p className="text-neutral-600 dark:text-neutral-300 text-sm mb-3 line-clamp-2 flex-grow">
             {product.description || 'Sem descrição disponível.'}
           </p>
 
           <div className="mt-auto">
-            <div className="flex items-baseline mb-1"> {/* De mb-2 para mb-1 */}
-              <span className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
+            <div className="flex items-baseline mb-3">
+              <span className="text-lg font-semibold text-neutral-900 dark:text-white">
                 {displayPrice}
               </span>
               {displayOriginalPrice && (
-                <span className="ml-2 text-sm text-neutral-500 line-through">
+                <span className="ml-2 text-sm text-neutral-500 dark:text-neutral-400 line-through">
                   {displayOriginalPrice}
                 </span>
               )}
@@ -158,7 +163,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
                 onClick={handleAddToCart}
                 disabled={isInCart}
                 className={clsx(
-                  "button-primary w-full text-center",
+                  "button-primary w-full text-center", // A classe 'button-primary' deve ser tratada no CSS global
                   {
                     'bg-emerald-600 hover:bg-emerald-600 cursor-not-allowed': isInCart,
                   }

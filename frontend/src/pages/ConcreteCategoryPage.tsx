@@ -140,7 +140,7 @@ const ConcreteCategoryPage: React.FC<ConcreteCategoryPageProps> = ({ categoryPag
 
 
     if (contextError) {
-        return <div className="container-custom py-16 text-center text-red-500">Erro ao carregar produtos: {contextError}</div>;
+        return <div className="container-custom py-16 text-center text-red-500 dark:text-red-400">Erro ao carregar produtos: {contextError}</div>;
     }
 
      const showEmptyMessage = !isLoading && currentProducts.length === 0 && filteredProducts.length > 0; // Mostra se não estiver carregando, não houver produtos NA PÁGINA ATUAL, mas houver produtos filtrados (acontece se estiver na última página de um filtro e o próximo filtro resultar em menos páginas)
@@ -149,11 +149,11 @@ const ConcreteCategoryPage: React.FC<ConcreteCategoryPageProps> = ({ categoryPag
     return (
         <div className="container-custom py-16">
             <motion.div /* Animações como em CatalogPage */ >
-                <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2 mt-10">
+                <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white mb-2 mt-10">
                     {categoryPageTitle}
                 </h1>
                  {/* Mostrar contagem total de produtos filtrados */}
-                <p className="text-neutral-600 mb-8">
+                <p className="text-neutral-600 dark:text-neutral-300 mb-8">
                     {filteredProducts.length} {filteredProducts.length === 1 ? 'produto encontrado' : 'produtos encontrados'}
                 </p>
             </motion.div>
@@ -161,28 +161,28 @@ const ConcreteCategoryPage: React.FC<ConcreteCategoryPageProps> = ({ categoryPag
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* Filtros (Desktop) - Adaptado de CatalogPage, REMOVA a seção "Categorias" */}
                 <motion.aside className="hidden lg:block w-64 flex-shrink-0" /* ... */>
-                    <div className="bg-white p-5 rounded-lg shadow-sm mb-6">
+                    <div className="bg-white dark:bg-neutral-800 p-5 rounded-lg shadow-sm mb-6">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-medium text-neutral-900">Filtros</h2>
-                            <button onClick={handleClearFilters} className="text-sm text-primary-600 hover:text-primary-700">Limpar</button>
+                            <h2 className="text-lg font-medium text-neutral-900 dark:text-white">Filtros</h2>
+                            <button onClick={handleClearFilters} className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">Limpar</button>
                         </div>
                         {/* NÃO incluir filtro de categorias aqui */}
 
                         {/* Filtro de Faixa de Preço */}
                         <div className="mb-6">
-                            <h3 className="text-sm font-medium text-neutral-900 mb-3">Faixa de Preço</h3>
+                            <h3 className="text-sm font-medium text-neutral-900 dark:text-white mb-3">Faixa de Preço</h3>
                             <div className="mb-4">
-                                <div className="flex justify-between text-xs text-neutral-500 mb-1">
-                                     <span>R$ {priceRange[0].toFixed(2)}</span> {/* Formatar para 2 casas decimais */}
-                                     <span>R$ {priceRange[1].toFixed(2)}</span> {/* Formatar para 2 casas decimais */}
+                                <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mb-1">
+                                    <span>R$ {priceRange[0].toFixed(2)}</span> {/* Formatar para 2 casas decimais */}
+                                    <span>R$ {priceRange[1].toFixed(2)}</span> {/* Formatar para 2 casas decimais */}
                                 </div>
                                  {/* Ajustar max dos sliders conforme o range máximo que você espera */}
                                 <input type="range" min="0" max="5000" step="10" value={priceRange[0]} onChange={(e) => handlePriceChange(0, parseInt(e.target.value))} className="w-full" />
                                 <input type="range" min="0" max="5000" step="10" value={priceRange[1]} onChange={(e) => handlePriceChange(1, parseInt(e.target.value))} className="w-full" />
                             </div>
                             <div className="flex gap-2">
-                                 <input type="number" placeholder="Mín" value={priceRange[0]} onChange={(e) => handlePriceChange(0, parseInt(e.target.value))} className="w-full p-2 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500" />
-                                 <input type="number" placeholder="Máx" value={priceRange[1]} onChange={(e) => handlePriceChange(1, parseInt(e.target.value))} className="w-full p-2 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                                 <input type="number" placeholder="Mín" value={priceRange[0]} onChange={(e) => handlePriceChange(0, parseInt(e.target.value))} className="w-full p-2 text-sm border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                                 <input type="number" placeholder="Máx" value={priceRange[1]} onChange={(e) => handlePriceChange(1, parseInt(e.target.value))} className="w-full p-2 text-sm border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded focus:outline-none focus:ring-1 focus:ring-primary-500" />
                             </div>
                         </div>
                     </div>
@@ -191,26 +191,26 @@ const ConcreteCategoryPage: React.FC<ConcreteCategoryPageProps> = ({ categoryPag
                 {/* Conteúdo Principal (Barra de Controles e Grid de Produtos) */}
                 <motion.div className="flex-1" /* ... */>
                     {/* Barra de Controles (Busca e Ordenação) */}
-                    <div className="bg-white p-4 rounded-lg shadow-sm mb-6 flex flex-col sm:flex-row justify-between gap-4">
+                    <div className="bg-white dark:bg-neutral-800 p-4 rounded-lg shadow-sm mb-6 flex flex-col sm:flex-row justify-between gap-4">
                         <form onSubmit={handleSearchSubmit} className="relative flex-1">
-                            <input type="text" placeholder={`Buscar em ${categoryPageTitle}...`} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
-                            <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500" />
+                            <input type="text" placeholder={`Buscar em ${categoryPageTitle}...`} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                            <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 dark:text-neutral-400" />
                         </form>
                         <div className="flex gap-3">
-                            <button onClick={toggleMobileFilter} className="lg:hidden flex items-center px-4 py-2 bg-white border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50">
+                            <button onClick={toggleMobileFilter} className="lg:hidden flex items-center px-4 py-2 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-md text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-600">
                                 <SlidersHorizontal size={18} className="mr-2" /> Filtros
                             </button>
                             {/* Dropdown de Ordenação */}
                             <div className="relative group">
-                                <button className="flex items-center px-4 py-2 bg-white border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50">
+                                <button className="flex items-center px-4 py-2 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-md text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-600">
                                     <span>Ordenar</span> <ChevronDown size={18} className="ml-2" />
                                 </button>
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-10 hidden group-hover:block">
+                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-800 rounded-md shadow-lg border-neutral-200 dark:border-neutral-700 overflow-hidden z-10 hidden group-hover:block">
                                     {/* Opções de Ordenação */}
-                                    <button onClick={() => setSortBy('relevance')} className={`block w-full text-left px-4 py-2 text-sm ${sortBy === 'relevance' ? 'bg-primary-50 text-primary-600' : 'text-neutral-700 hover:bg-neutral-50'}`}>Relevância</button>
-                                    <button onClick={() => setSortBy('price-asc')} className={`block w-full text-left px-4 py-2 text-sm ${sortBy === 'price-asc' ? 'bg-primary-50 text-primary-600' : 'text-neutral-700 hover:bg-neutral-50'}`}>Menor Preço</button>
-                                    <button onClick={() => setSortBy('price-desc')} className={`block w-full text-left px-4 py-2 text-sm ${sortBy === 'price-desc' ? 'bg-primary-50 text-primary-600' : 'text-neutral-700 hover:bg-neutral-50'}`}>Maior Preço</button>
-                                    <button onClick={() => setSortBy('rating')} className={`block w-full text-left px-4 py-2 text-sm ${sortBy === 'rating' ? 'bg-primary-50 text-primary-600' : 'text-neutral-700 hover:bg-neutral-50'}`}>Melhor Avaliado</button>
+                                    <button onClick={() => setSortBy('relevance')} className={`block w-full text-left px-4 py-2 text-sm ${sortBy === 'relevance' ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-300' : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700'}`}>Relevância</button>
+                                    <button onClick={() => setSortBy('price-asc')} className={`block w-full text-left px-4 py-2 text-sm ${sortBy === 'price-asc' ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-300' : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700'}`}>Menor Preço</button>
+                                    <button onClick={() => setSortBy('price-desc')} className={`block w-full text-left px-4 py-2 text-sm ${sortBy === 'price-desc' ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-300' : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700'}`}>Maior Preço</button>
+                                    <button onClick={() => setSortBy('rating')} className={`block w-full text-left px-4 py-2 text-sm ${sortBy === 'rating' ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-300' : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700'}`}>Melhor Avaliado</button>
                                     {/* Ajuste ou adicione outras opções de ordenação conforme necessário */}
                                 </div>
                             </div>
@@ -222,65 +222,67 @@ const ConcreteCategoryPage: React.FC<ConcreteCategoryPageProps> = ({ categoryPag
 
                     {/* Exibir mensagem se não houver produtos filtrados */}
                      {showNoResultsMessage ? (
-                        <div className="text-center py-12 text-neutral-600">
-                            Nenhum produto encontrado em "{categoryPageTitle}" com os filtros aplicados.
-                             <button onClick={handleClearFilters} className="mt-4 text-primary-600 hover:underline">Limpar Filtros</button>
-                        </div>
-                    ) : (
-                        <>
-                            {/* Passar apenas os produtos da página atual */}
-                            <ProductGrid
-                                products={currentProducts} // Usar currentProducts aqui
-                                loading={isLoading}
-                                emptyMessage={`Nenhum produto encontrado nesta página.`} 
-                                
-                            />
+                         <div className="text-center py-12 text-neutral-600 dark:text-neutral-300">
+                             Nenhum produto encontrado em "{categoryPageTitle}" com os filtros aplicados.
+                              <button onClick={handleClearFilters} className="mt-4 text-primary-600 dark:text-primary-400 hover:underline">Limpar Filtros</button>
+                         </div>
+                     ) : (
+                         <>
+                             {/* Passar apenas os produtos da página atual */}
+                             <ProductGrid
+                                 products={currentProducts} // Usar currentProducts aqui
+                                 loading={isLoading}
+                                 emptyMessage={`Nenhum produto encontrado nesta página.`} 
+                                 
+                             />
 
-                             {/* --- Adicionar Componente de Paginação --- */}
-                            {totalPages > 1 && ( // Só mostra a paginação se houver mais de 1 página
-                                <Pagination
-                                    currentPage={currentPage}
-                                    totalPages={totalPages}
-                                    onPageChange={handlePageChange}
-                                />
-                            )}
-                            {/* ------------------------------------------ */}
-                        </>
-                     )}
+                              {/* --- Adicionar Componente de Paginação --- */}
+                             {totalPages > 1 && ( // Só mostra a paginação se houver mais de 1 página
+                                 <Pagination
+                                     currentPage={currentPage}
+                                     totalPages={totalPages}
+                                     onPageChange={handlePageChange}
+                                 />
+                             )}
+                              {/* ------------------------------------------ */}
+                         </>
+                       )}
 
                 </motion.div>
             </div>
 
             {/* Filtros Mobile (Adaptado de CatalogPage, REMOVA a seção "Categorias") */}
             <div className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity duration-300 ${isMobileFilterOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={toggleMobileFilter}>
-                <div className={`absolute right-0 top-0 bottom-0 w-80 bg-white shadow-lg transform transition-transform duration-300 ${isMobileFilterOpen ? 'translate-x-0' : 'translate-x-full'}`} onClick={e => e.stopPropagation()}>
-                    <div className="p-5">
+                <div className={`absolute right-0 top-0 bottom-0 w-80 bg-white dark:bg-neutral-900 shadow-lg transform transition-transform duration-300 ${isMobileFilterOpen ? 'translate-x-0' : 'translate-x-full'}`} onClick={e => e.stopPropagation()}>
+                    <div className="p-5 h-full flex flex-col">
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-lg font-medium text-neutral-900">Filtros</h2>
-                            <button onClick={toggleMobileFilter}><X size={24} /></button>
+                            <h2 className="text-lg font-medium text-neutral-900 dark:text-white">Filtros</h2>
+                            <button onClick={toggleMobileFilter} className="text-neutral-500 dark:text-neutral-400"><X size={24} /></button>
                         </div>
-                        {/* NÃO incluir filtro de categorias aqui */}
-                        {/* Filtro de Faixa de Preço Mobile (copiado/adaptado de CatalogPage) */}
-                         <div className="mb-6">
-                            <h3 className="text-sm font-medium text-neutral-900 mb-3">Faixa de Preço</h3>
-                            <div className="mb-4">
-                                <div className="flex justify-between text-xs text-neutral-500 mb-1">
-                                     <span>R$ {priceRange[0].toFixed(2)}</span> {/* Formatar para 2 casas decimais */}
-                                     <span>R$ {priceRange[1].toFixed(2)}</span> {/* Formatar para 2 casas decimais */}
-                                </div>
-                                 {/* Ajustar max dos sliders conforme o range máximo que você espera */}
-                                <input type="range" min="0" max="5000" step="10" value={priceRange[0]} onChange={(e) => handlePriceChange(0, parseInt(e.target.value))} className="w-full" />
-                                <input type="range" min="0" max="5000" step="10" value={priceRange[1]} onChange={(e) => handlePriceChange(1, parseInt(e.target.value))} className="w-full" />
-                            </div>
-                            <div className="flex gap-2">
-                                 <input type="number" placeholder="Mín" value={priceRange[0]} onChange={(e) => handlePriceChange(0, parseInt(e.target.value))} className="w-full p-2 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500" />
-                                 <input type="number" placeholder="Máx" value={priceRange[1]} onChange={(e) => handlePriceChange(1, parseInt(e.target.value))} className="w-full p-2 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500" />
-                            </div>
+                        <div className="flex-1 overflow-y-auto">
+                            {/* NÃO incluir filtro de categorias aqui */}
+                            {/* Filtro de Faixa de Preço Mobile (copiado/adaptado de CatalogPage) */}
+                             <div className="mb-6">
+                                 <h3 className="text-sm font-medium text-neutral-900 dark:text-white mb-3">Faixa de Preço</h3>
+                                 <div className="mb-4">
+                                     <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mb-1">
+                                          <span>R$ {priceRange[0].toFixed(2)}</span> {/* Formatar para 2 casas decimais */}
+                                          <span>R$ {priceRange[1].toFixed(2)}</span> {/* Formatar para 2 casas decimais */}
+                                     </div>
+                                      {/* Ajustar max dos sliders conforme o range máximo que você espera */}
+                                     <input type="range" min="0" max="5000" step="10" value={priceRange[0]} onChange={(e) => handlePriceChange(0, parseInt(e.target.value))} className="w-full" />
+                                     <input type="range" min="0" max="5000" step="10" value={priceRange[1]} onChange={(e) => handlePriceChange(1, parseInt(e.target.value))} className="w-full" />
+                                 </div>
+                                 <div className="flex gap-2">
+                                      <input type="number" placeholder="Mín" value={priceRange[0]} onChange={(e) => handlePriceChange(0, parseInt(e.target.value))} className="w-full p-2 text-sm border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                                      <input type="number" placeholder="Máx" value={priceRange[1]} onChange={(e) => handlePriceChange(1, parseInt(e.target.value))} className="w-full p-2 text-sm border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                                 </div>
+                             </div>
                         </div>
                         {/* Botões Aplicar/Limpar Filtros Mobile */}
-                         <div className="mt-auto flex gap-4"> {/* Pode precisar de um flex-col no container pai para empurrar para baixo */}
-                            <button onClick={() => { handleClearFilters(); toggleMobileFilter(); }} className="flex-1 px-4 py-2 bg-neutral-100 text-neutral-700 rounded-md hover:bg-neutral-200">Limpar</button>
-                            <button onClick={toggleMobileFilter} className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">Aplicar</button> {/* A aplicação é reativa, este botão só fecha */}
+                         <div className="mt-auto flex gap-4 pt-4 border-t border-neutral-200 dark:border-neutral-700"> {/* Pode precisar de um flex-col no container pai para empurrar para baixo */}
+                             <button onClick={() => { handleClearFilters(); toggleMobileFilter(); }} className="flex-1 px-4 py-2 bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-600">Limpar</button>
+                             <button onClick={toggleMobileFilter} className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">Aplicar</button> {/* A aplicação é reativa, este botão só fecha */}
                          </div>
                     </div>
                 </div>
