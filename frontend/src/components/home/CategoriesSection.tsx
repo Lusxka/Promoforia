@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Smartphone, Tv, ShoppingBag, Home, Brush, Dumbbell, Layers, Star, Heart, Tag, ShoppingCart } from 'lucide-react';
+import { Smartphone, Tv, ShoppingBag, Home, Brush, Dumbbell, Layers, Star, Heart, Tag, ShoppingCart, Percent } from 'lucide-react'; // Adicionado 'Percent' para o Promo Day
 import { useProducts } from '../../contexts/ProductContext';
 
 interface CategoryCardProps {
@@ -39,8 +39,21 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ icon, title, count, slug, d
     );
 };
 
+// Adicione a categoria 'promo-day' aqui, se ela for estática
+// Se 'promo-day' for uma categoria real de produtos, ela será gerada dinamicamente pelo useMemo
+// Se ela for uma "seção" especial, você pode adicioná-la aqui para garantir que apareça.
+const staticCategories = [
+    { name: 'Promo Day', slug: 'promo-day' }, // Novo campo PROMO DAY
+    { name: 'Relâmpago', slug: 'relampago' },
+    { name: 'Ofertas', slug: 'ofertas' },
+    { name: 'Menos de R$100', slug: 'menos-de-100' },
+    { name: 'Compra do Mês', slug: 'compra-do-mes' },
+    { name: 'Moda', slug: 'moda' },
+];
+
 const getCategoryIcon = (slug: string): React.ReactNode => {
     switch (slug) {
+        case 'promo-day': return <Percent size={30} />; // Ícone para PROMO DAY
         case 'relampago': return <Star size={30} />;
         case 'ofertas': return <Tag size={30} />;
         case 'menos-de-100': return <ShoppingCart size={30} />;
@@ -58,24 +71,43 @@ const CategoriesSection: React.FC = () => {
             return [];
         }
         const categoryMap = new Map<string, { title: string, count: number }>();
+
+        // Adiciona as categorias estáticas inicialmente para garantir que apareçam,
+        // mesmo que não haja produtos diretamente associados a elas ainda.
+        staticCategories.forEach(cat => {
+            // Se 'PROMO DAY' não for uma categoria de produto real,
+            // você pode dar a ela um count inicial de 0 ou um valor default.
+            // Aqui estamos assumindo que 'promo-day' será um slug real de produto para o count ser atualizado.
+            categoryMap.set(cat.slug, { title: cat.name, count: 0 });
+        });
+
         products.forEach(product => {
             const slug = product.categorySlug;
             if (!slug) {
                 return;
             }
-            const title = slug
-                .split('-')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
-            if (categoryMap.has(slug)) {
-                categoryMap.get(slug)!.count++;
+            // Verifica se a categoria já existe no mapa ou se é uma nova
+            const existing = categoryMap.get(slug);
+            if (existing) {
+                existing.count++;
             } else {
+                // Caso seja uma categoria dinâmica não listada em staticCategories
+                const title = slug
+                    .split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
                 categoryMap.set(slug, { title, count: 1 });
             }
         });
+
         const sortedCategories = Array.from(categoryMap.entries())
             .map(([slug, { title, count }]) => ({ id: slug, slug, title, count }))
-            .sort((a, b) => a.title.localeCompare(b.title));
+            .sort((a, b) => {
+                // Opcional: Manter 'PROMO DAY' no topo ou em uma posição específica
+                if (a.slug === 'promo-day') return -1;
+                if (b.slug === 'promo-day') return 1;
+                return a.title.localeCompare(b.title);
+            });
         return sortedCategories;
     }, [products]);
 
@@ -101,7 +133,10 @@ const CategoriesSection: React.FC = () => {
         );
     }
 
-    if (!categoriesData || !Array.isArray(categoriesData) || categoriesData.length === 0) {
+    // Mesmo que não haja produtos, as categorias estáticas devem ser exibidas.
+    // Ajuste esta condição se você quiser que a seção inteira não apareça
+    // se não houver NENHUMA categoria gerada ou estática.
+    if (!categoriesData || categoriesData.length === 0) {
         return (
             // CORREÇÃO DARK MODE: Fundo e cor do texto
             <section className="section-padding bg-neutral-50 dark:bg-neutral-900">

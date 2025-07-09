@@ -143,7 +143,7 @@ const Header: React.FC = () => {
               to="/catalogo"
               className={`${textColor} ${hoverText} font-medium transition-colors`}
             >
-              Produtos
+              Promo Day {/* <-- ALTERADO AQUI */}
             </Link>
 
             <div className="group relative">
@@ -251,7 +251,7 @@ const Header: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar produtos..."
-                className="w-full px-4 py-2 rounded-full border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 text-neutral-700 dark:text-neutral-200 placeholder-neutral-500 dark:placeholder-neutral-400"
+                className="w-full px-4 py-2 rounded-full border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-300 text-neutral-700 dark:text-neutral-200 placeholder-neutral-500 dark:placeholder-400"
               />
               <button
                 type="submit"
@@ -274,7 +274,7 @@ const Header: React.FC = () => {
                 className="text-neutral-700 dark:text-neutral-200 py-3 border-b border-neutral-100 dark:border-neutral-700 text-base hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                 onClick={toggleMobileMenu}
               >
-                Todos os Produtos
+                Promo Day {/* <-- ALTERADO AQUI */}
               </Link>
               {headerCategories.map((c) => (
                 <Link
@@ -299,7 +299,6 @@ const Header: React.FC = () => {
       </header>
 
       {/* ---------- Animação toast ---------- */}
-      {/* O atributo 'jsx' foi removido desta tag <style> */}
       <style>{`
         @keyframes toast {
           0% {
