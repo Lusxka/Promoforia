@@ -1,4 +1,3 @@
-// src/components/home/HeroSection.tsx
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -18,17 +17,18 @@ const HeroSection: React.FC = () => {
           muted
           playsInline
           className="w-full h-full object-cover"
+          // O ideal é que os dois vídeos tenham resoluções e bitrates similares
           src={isDarkMode ? "src/components/layout/img/fundoDark.mp4" : "src/components/layout/img/fundo.mp4"}
         >
           Seu navegador não suporta vídeo em HTML5.
         </video>
       </div>
 
-      {/* Removemos este overlay de cor que criava o fundo azul
-      <div className="absolute inset-0 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 opacity-80 z-10" />
-      */}
+      {/* ✅ AJUSTE PRINCIPAL: Overlay semitransparente para melhorar o contraste e a qualidade percebida. */}
+      <div className="absolute inset-0 z-10 bg-black/50"></div>
 
-      <div className="container-custom relative z-20"> {/* Conteúdo acima do vídeo */}
+      {/* Conteúdo acima do vídeo e do overlay */}
+      <div className="container-custom relative z-20"> 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           {/* Hero Content */}
           <motion.div
