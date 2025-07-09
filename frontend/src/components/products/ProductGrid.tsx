@@ -34,12 +34,16 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 
     // Agora é seguro usar products.map porque garantimos que products é um array com items
     return (
-        // --- Classes ajustadas para 3 colunas em telas médias e maiores ---
-        // grid-cols-2: 2 colunas em telas pequenas
-        // md:grid-cols-3: 3 colunas em telas médias (md) e maiores
-        <div className="product-grid grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        // --- CLASSES AJUSTADAS AQUI para mais colunas e espaçamento ligeiramente menor ---
+        // grid-cols-2: 2 colunas em telas pequenas (padrão)
+        // sm:grid-cols-3: 3 colunas em telas sm (640px)
+        // md:grid-cols-4: 4 colunas em telas md (768px)
+        // lg:grid-cols-5: 5 colunas em telas lg (1024px)
+        // xl:grid-cols-6: 6 colunas em telas xl (1280px)
+        // gap-x-4 gap-y-6: espaçamento entre itens (ajustado para ser um pouco mais compacto na vertical)
+        <div className="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-6">
             {products.map((product, index) => (
-                product ? <ProductCard key={product._id || index} product={product} index={index} /> : null // Usar _id ou index como fallback para key
+                product ? <ProductCard key={product._id || index} product={product} index={index} /> : null
             ))}
         </div>
     );
