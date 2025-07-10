@@ -1,3 +1,5 @@
+// src/components/layout/Header.tsx
+
 // Update the imports section to include ThemeToggle
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -16,7 +18,6 @@ const headerCategories = [
   { name: 'Moda', path: '/categorias/moda' },
 ];
 
-/* ---------- Tipo auxiliar ---------- */
 type ToastData =
   | { context: 'cart' | 'wishlist'; action: 'added' | 'removed' }
   | null;
@@ -33,21 +34,17 @@ const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  /* ---------- Contadores anteriores (null no primeiro render) ---------- */
   const [prevCartCount, setPrevCartCount] = useState<number | null>(null);
   const [prevWishlistCount, setPrevWishlistCount] = useState<number | null>(null);
 
-  /* ---------- Scroll ---------- */
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  /* ---------- Fecha menu mobile ao navegar ---------- */
   useEffect(() => setIsMobileMenuOpen(false), [location.pathname]);
 
-  /* ---------- Monitora carrinho ---------- */
   const cartCount = getCartCount();
   useEffect(() => {
     if (prevCartCount !== null && cartCount !== prevCartCount) {
@@ -57,7 +54,6 @@ const Header: React.FC = () => {
     setPrevCartCount(cartCount);
   }, [cartCount, prevCartCount]);
 
-  /* ---------- Monitora favoritos ---------- */
   const wishlistCount = wishlist.length;
   useEffect(() => {
     if (prevWishlistCount !== null && wishlistCount !== prevWishlistCount) {
@@ -70,7 +66,6 @@ const Header: React.FC = () => {
     setPrevWishlistCount(wishlistCount);
   }, [wishlistCount, prevWishlistCount]);
 
-  /* ---------- Handlers ---------- */
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -82,7 +77,7 @@ const Header: React.FC = () => {
     }
   };
 
-  /* ---------- Estilos dinâmicos ---------- */
+  // A sua lógica de estilos dinâmicos está perfeita e será a fonte da verdade
   const useDark = isScrolled || location.pathname !== '/';
   const textColor = useDark ? 'text-neutral-700 dark:text-neutral-200' : 'text-white';
   const iconColor = useDark ? 'text-neutral-700 dark:text-neutral-200' : 'text-white';
@@ -90,7 +85,6 @@ const Header: React.FC = () => {
     ? 'hover:text-primary-600 dark:hover:text-primary-400'
     : 'hover:text-neutral-300';
 
-  /* ---------- Renderiza toast ---------- */
   const renderToast = () => {
     if (!toast) return null;
     const isAdd = toast.action === 'added';
@@ -116,7 +110,6 @@ const Header: React.FC = () => {
 
   return (
     <>
-      {/* ---------- Toast global ---------- */}
       {renderToast()}
 
       <header
@@ -125,7 +118,6 @@ const Header: React.FC = () => {
         }`}
       >
         <div className="container-custom flex items-center justify-between">
-          {/* ---------- Logo ---------- */}
           <Link to="/" className="flex items-center ml-4">
             <img
               src={useDark ? logoEscuro : logoClaro}
@@ -134,7 +126,6 @@ const Header: React.FC = () => {
             />
           </Link>
 
-          {/* ---------- Navegação desktop ---------- */}
           <nav className="hidden md:flex items-center space-x-6">
             <Link to="/" className={`${textColor} ${hoverText} font-medium transition-colors`}>
               Início
@@ -143,7 +134,7 @@ const Header: React.FC = () => {
               to="/catalogo"
               className={`${textColor} ${hoverText} font-medium transition-colors`}
             >
-              Promo Day {/* <-- ALTERADO AQUI */}
+              Promo Day
             </Link>
 
             <div className="group relative">
@@ -170,7 +161,6 @@ const Header: React.FC = () => {
             </div>
           </nav>
 
-          {/* ---------- Busca desktop ---------- */}
           <form
             onSubmit={handleSearchSubmit}
             className="hidden md:flex relative mx-4 flex-grow max-w-md"
@@ -191,10 +181,10 @@ const Header: React.FC = () => {
           </form>
 
           {/* ---------- Ícones desktop ---------- */}
-          <div className="hidden md:flex items-center space-x-4">
-            <ThemeToggle />
+          <div className="hidden md:flex items-center space-x-2">
+            {/* ✅ CORREÇÃO APLICADA AQUI ✅ */}
+            <ThemeToggle className={`${iconColor} ${hoverText}`} />
 
-            {/* Favoritos */}
             <Link to="/favoritos" className={`relative p-2 ${iconColor} ${hoverText}`}>
               <Heart size={22} />
               {wishlistCount > 0 && (
@@ -204,7 +194,6 @@ const Header: React.FC = () => {
               )}
             </Link>
 
-            {/* Carrinho */}
             <Link to="/carrinho" className={`relative p-2 ${iconColor} ${hoverText}`}>
               <ShoppingCart size={22} />
               {cartCount > 0 && (
@@ -216,10 +205,10 @@ const Header: React.FC = () => {
           </div>
 
           {/* ---------- Ícones mobile ---------- */}
-          <div className="flex md:hidden items-center space-x-3">
-            <ThemeToggle />
+          <div className="flex md:hidden items-center space-x-1">
+            {/* ✅ CORREÇÃO APLICADA AQUI TAMBÉM ✅ */}
+            <ThemeToggle className={`${iconColor} ${hoverText}`} />
 
-            {/* Carrinho (mobile) */}
             <Link to="/carrinho" className={`relative p-2 ${iconColor} ${hoverText}`}>
               <ShoppingCart size={24} />
               {cartCount > 0 && (
@@ -274,7 +263,7 @@ const Header: React.FC = () => {
                 className="text-neutral-700 dark:text-neutral-200 py-3 border-b border-neutral-100 dark:border-neutral-700 text-base hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                 onClick={toggleMobileMenu}
               >
-                Promo Day {/* <-- ALTERADO AQUI */}
+                Promo Day
               </Link>
               {headerCategories.map((c) => (
                 <Link
@@ -298,7 +287,7 @@ const Header: React.FC = () => {
         </div>
       </header>
 
-      {/* ---------- Animação toast ---------- */}
+      {/* Animação toast */}
       <style>{`
         @keyframes toast {
           0% {
