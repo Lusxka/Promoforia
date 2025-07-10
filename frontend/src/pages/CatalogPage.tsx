@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useProducts } from '../contexts/ProductContext';
 import ProductGrid from '../components/products/ProductGrid';
 import Pagination from '../components/common/Pagination';
-import { ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react';
+import { ChevronDown, Search, SlidersHorizontal, X, Filter, Tag, DollarSign } from 'lucide-react';
 
 const displayCategories = [
     { name: "Relâmpago", pathSuffix: "relampago" },
@@ -103,6 +103,7 @@ const CatalogPage: React.FC = () => {
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        // A lógica de busca já é reativa pelo `onChange` e `useEffect`
         if (isMobileFilterOpen) toggleMobileFilter();
     };
 
@@ -110,20 +111,10 @@ const CatalogPage: React.FC = () => {
         setSearchQuery(e.target.value);
     };
 
-    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: 0 | 1) => {
-        const value = parseInt(e.target.value, 10);
-        const newValue = isNaN(value) ? (index === 0 ? 0 : 5000) : value;
-        const newRange: [number, number] = [...priceRange];
-        if (index === 0) {
-            newRange[0] = Math.min(newValue, newRange[1]);
-        } else {
-            newRange[1] = Math.max(newValue, newRange[0]);
-        }
+    const handlePriceChange = (index: number, value: number) => {
+        const newRange = [...priceRange] as [number, number];
+        newRange[index] = isNaN(value) ? (index === 0 ? 0 : 5000) : value;
         setPriceRange(newRange);
-    };
-
-    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSortBy(e.target.value);
     };
 
     const indexOfLastProduct = currentPage * productsPerPage;
@@ -137,12 +128,10 @@ const CatalogPage: React.FC = () => {
     };
 
     if (loading && allProductsFromContext.length === 0) {
-        // ProductGrid deve ter seus próprios estilos de dark mode para os skeletons.
         return <div className="container-custom py-16"><ProductGrid loading={true} count={40} /></div>;
     }
 
     if (error) {
-        // CORREÇÃO DARK MODE: Cor do texto de erro.
         return <div className="container-custom py-16 text-center text-red-500 dark:text-red-400">Erro ao carregar produtos: {error}</div>;
     }
 
@@ -153,7 +142,6 @@ const CatalogPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
             >
-                {/* CORREÇÃO DARK MODE: Cor do cabeçalho */}
                 <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white mb-2">
                     {searchQuery ? `Resultados para "${searchQuery}"` : 'Todos os Produtos'}
                 </h1>
@@ -163,111 +151,212 @@ const CatalogPage: React.FC = () => {
             </motion.div>
 
             <div className="flex flex-col lg:flex-row gap-8">
-                {/* CORREÇÃO DARK MODE: Sidebar de filtros */}
-                <aside className="hidden lg:block w-64 flex-shrink-0">
-                    <div className="bg-white dark:bg-neutral-800 p-5 rounded-lg shadow-sm mb-6">
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-medium text-neutral-900 dark:text-white">Filtros</h2>
-                            <button
-                                onClick={handleClearFilters}
-                                className="text-sm text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors"
-                            >
-                                Limpar
-                            </button>
+                {/* Filtros Desktop */}
+                <motion.aside 
+                    className="hidden lg:block w-64 flex-shrink-0"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+                        {/* Header dos Filtros */}
+                        <div className="p-6 border-b border-neutral-200 dark:border-neutral-700">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center">
+                                    <Filter size={20} className="text-primary-600 dark:text-primary-400 mr-2" />
+                                    <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">Filtros</h2>
+                                </div>
+                                <button
+                                    onClick={handleClearFilters}
+                                    className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+                                >
+                                    Limpar
+                                </button>
+                            </div>
                         </div>
 
-                        <div className="mb-6">
-                            <h3 className="text-sm font-medium text-neutral-900 dark:text-white mb-3">Categorias</h3>
-                            <ul className="space-y-2">
-                                <li>
+                        {/* Filtro de Categorias */}
+                        <div className="p-6 border-b border-neutral-200 dark:border-neutral-700">
+                            <div className="flex items-center mb-4">
+                                <Tag size={18} className="text-neutral-600 dark:text-neutral-400 mr-2" />
+                                <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">Categorias</h3>
+                            </div>
+                            <div className="space-y-2">
+                                <button
+                                    onClick={() => handleCategorySelectAndNavigate(null)}
+                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                                        location.pathname === '/catalogo'
+                                            ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-700 dark:text-primary-300 font-medium border border-primary-200 dark:border-primary-500/20'
+                                            : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700/50 hover:text-primary-600 dark:hover:text-primary-400'
+                                    }`}
+                                >
+                                    Todos os Produtos
+                                </button>
+                                {displayCategories.map(category => (
                                     <button
-                                        onClick={() => handleCategorySelectAndNavigate(null)}
-                                        className={`text-sm w-full text-left transition-colors ${
-                                            location.pathname === '/catalogo'
-                                                ? 'text-primary-600 dark:text-primary-400 font-medium'
-                                                : 'text-neutral-700 dark:text-neutral-200 hover:text-primary-600 dark:hover:text-primary-400'
+                                        key={category.pathSuffix}
+                                        onClick={() => handleCategorySelectAndNavigate(category.pathSuffix)}
+                                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                                            location.pathname === `/categorias/${category.pathSuffix}`
+                                                ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-700 dark:text-primary-300 font-medium border border-primary-200 dark:border-primary-500/20'
+                                                : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700/50 hover:text-primary-600 dark:hover:text-primary-400'
                                         }`}
                                     >
-                                        Todos os Produtos
+                                        {category.name}
                                     </button>
-                                </li>
-                                {displayCategories.map(category => (
-                                    <li key={category.pathSuffix}>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Filtro de Preço */}
+                        <div className="p-6">
+                            <div className="flex items-center mb-4">
+                                <DollarSign size={18} className="text-neutral-600 dark:text-neutral-400 mr-2" />
+                                <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">Faixa de Preço</h3>
+                            </div>
+                            <div className="mb-4">
+                                <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mb-2">
+                                    <span>R$ {priceRange[0].toFixed(2)}</span>
+                                    <span>R$ {priceRange[1].toFixed(2)}</span>
+                                </div>
+                                <div className="space-y-2">
+                                    <input
+                                        type="range" min="0" max="5000" step="10"
+                                        value={priceRange[0]}
+                                        onChange={(e) => handlePriceChange(0, parseInt(e.target.value))}
+                                        className="w-full h-2 bg-neutral-200 dark:bg-neutral-600 rounded-lg appearance-none cursor-pointer slider-thumb"
+                                    />
+                                    <input
+                                        type="range" min="0" max="5000" step="10"
+                                        value={priceRange[1]}
+                                        onChange={(e) => handlePriceChange(1, parseInt(e.target.value))}
+                                        className="w-full h-2 bg-neutral-200 dark:bg-neutral-600 rounded-lg appearance-none cursor-pointer slider-thumb"
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label className="block text-xs text-neutral-500 dark:text-neutral-400 mb-1">Mínimo</label>
+                                    <input
+                                        type="number" placeholder="0" value={priceRange[0]}
+                                        onChange={(e) => handlePriceChange(0, parseInt(e.target.value))}
+                                        className="w-full px-3 py-2 text-sm border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                        min="0"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs text-neutral-500 dark:text-neutral-400 mb-1">Máximo</label>
+                                    <input
+                                        type="number" placeholder="5000" value={priceRange[1]}
+                                        onChange={(e) => handlePriceChange(1, parseInt(e.target.value))}
+                                        className="w-full px-3 py-2 text-sm border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                        min="0"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </motion.aside>
+
+                {/* Conteúdo Principal */}
+                <motion.div 
+                    className="flex-1"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                    {/* Barra de Controles */}
+                    <div className="bg-white dark:bg-neutral-800 p-4 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700 mb-6">
+                        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                            {/* Busca */}
+                            <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full sm:max-w-md">
+                                <input
+                                    type="text"
+                                    placeholder="Buscar produtos..."
+                                    value={searchQuery}
+                                    onChange={handleSearchInputChange}
+                                    className="w-full pl-10 pr-4 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                />
+                                <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 dark:text-neutral-400" />
+                            </form>
+
+                            <div className="flex items-center gap-3">
+                                {/* Botão Filtros Mobile */}
+                                <button
+                                    onClick={toggleMobileFilter}
+                                    className="lg:hidden flex items-center px-4 py-2 bg-neutral-100 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-lg text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-all"
+                                >
+                                    <SlidersHorizontal size={18} className="mr-2" />
+                                    Filtros
+                                </button>
+
+                                {/* Dropdown de Ordenação */}
+                                <div className="relative group">
+                                    <button className="flex items-center px-4 py-2 bg-neutral-100 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-lg text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-all">
+                                        <span className="text-sm">Ordenar</span>
+                                        <ChevronDown size={16} className="ml-2" />
+                                    </button>
+                                    <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 overflow-hidden z-10 hidden group-hover:block">
                                         <button
-                                            onClick={() => handleCategorySelectAndNavigate(category.pathSuffix)}
-                                            className={`text-sm w-full text-left transition-colors ${
-                                                location.pathname === `/categorias/${category.pathSuffix}`
-                                                    ? 'text-primary-600 dark:text-primary-400 font-medium'
-                                                    : 'text-neutral-700 dark:text-neutral-200 hover:text-primary-600 dark:hover:text-primary-400'
+                                            onClick={() => setSortBy('relevance')}
+                                            className={`block w-full text-left px-4 py-3 text-sm transition-colors ${
+                                                sortBy === 'relevance'
+                                                    ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-300 font-medium'
+                                                    : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700'
                                             }`}
                                         >
-                                            {category.name}
+                                            Relevância
                                         </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="mb-6">
-                            <h3 className="text-sm font-medium text-neutral-900 dark:text-white mb-3">Preço</h3>
-                            <div className="flex items-center space-x-3">
-                                <input
-                                    type="number"
-                                    placeholder="0"
-                                    value={priceRange[0]}
-                                    onChange={(e) => handlePriceChange(e, 0)}
-                                    className="w-1/2 px-2 py-1 border rounded text-sm bg-transparent dark:bg-neutral-700 border-neutral-300 dark:border-neutral-600 dark:text-white"
-                                    min="0"
-                                />
-                                <span className='dark:text-neutral-400'>-</span>
-                                <input
-                                    type="number"
-                                    placeholder="5000"
-                                    value={priceRange[1]}
-                                    onChange={(e) => handlePriceChange(e, 1)}
-                                    className="w-1/2 px-2 py-1 border rounded text-sm bg-transparent dark:bg-neutral-700 border-neutral-300 dark:border-neutral-600 dark:text-white"
-                                    min="0"
-                                />
+                                        <button
+                                            onClick={() => setSortBy('price-asc')}
+                                            className={`block w-full text-left px-4 py-3 text-sm transition-colors ${
+                                                sortBy === 'price-asc'
+                                                    ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-300 font-medium'
+                                                    : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700'
+                                            }`}
+                                        >
+                                            Menor Preço
+                                        </button>
+                                        <button
+                                            onClick={() => setSortBy('price-desc')}
+                                            className={`block w-full text-left px-4 py-3 text-sm transition-colors ${
+                                                sortBy === 'price-desc'
+                                                    ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-300 font-medium'
+                                                    : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700'
+                                            }`}
+                                        >
+                                            Maior Preço
+                                        </button>
+                                        <button
+                                            onClick={() => setSortBy('rating-desc')}
+                                            className={`block w-full text-left px-4 py-3 text-sm transition-colors ${
+                                                sortBy === 'rating-desc'
+                                                    ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-300 font-medium'
+                                                    : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700'
+                                            }`}
+                                        >
+                                            Melhor Avaliado
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Atual: R${priceRange[0].toFixed(2)} - R${priceRange[1].toFixed(2)}</p>
-                        </div>
-                    </div>
-                </aside>
-
-                <div className="flex-1">
-                    {/* CORREÇÃO DARK MODE: Barra de controle */}
-                    <div className="flex justify-between items-center mb-6">
-                        <button
-                            onClick={toggleMobileFilter}
-                            className="lg:hidden flex items-center text-neutral-700 dark:text-neutral-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                        >
-                            <SlidersHorizontal size={20} className="mr-2" />
-                            Filtrar
-                        </button>
-
-                        <div className="flex items-center">
-                            <label htmlFor="sort-by" className="text-sm text-neutral-700 dark:text-neutral-300 mr-2">Ordenar por:</label>
-                            <select
-                                id="sort-by"
-                                value={sortBy}
-                                onChange={handleSortChange}
-                                className="text-sm border rounded px-2 py-1 bg-white dark:bg-neutral-700 border-neutral-300 dark:border-neutral-600 dark:text-white"
-                            >
-                                <option value="relevance">Relevância</option>
-                                <option value="price-asc">Preço: Menor para Maior</option>
-                                <option value="price-desc">Preço: Maior para Menor</option>
-                                <option value="name-asc">Nome: A-Z</option>
-                                <option value="name-desc">Nome: Z-A</option>
-                                <option value="rating-desc">Avaliação: Maior para Menor</option>
-                            </select>
                         </div>
                     </div>
 
+                    {/* Grid de Produtos */}
                     {filteredProducts.length === 0 && !loading ? (
-                        // CORREÇÃO DARK MODE: Mensagem de "nenhum produto"
                         <div className="text-center py-12 text-neutral-600 dark:text-neutral-300">
-                            Nenhum produto encontrado com os filtros atuais.
-                            <button onClick={handleClearFilters} className="mt-4 text-primary-600 dark:text-primary-400 hover:underline">Limpar Filtros</button>
+                            <div className="mb-4">
+                                <Search size={48} className="mx-auto text-neutral-400 dark:text-neutral-500 mb-4" />
+                                <p className="text-lg font-medium mb-2">Nenhum produto encontrado</p>
+                                <p className="text-sm">Tente ajustar seus filtros ou fazer uma nova busca</p>
+                            </div>
+                            <button 
+                                onClick={handleClearFilters} 
+                                className="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors"
+                            >
+                                Limpar Filtros
+                            </button>
                         </div>
                     ) : (
                         <>
@@ -285,89 +374,116 @@ const CatalogPage: React.FC = () => {
                             )}
                         </>
                     )}
-                </div>
+                </motion.div>
             </div>
 
-            {/* CORREÇÃO DARK MODE: Sidebar mobile */}
+            {/* Filtros Mobile */}
             <div
-                className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ${
+                className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-50 transition-all duration-300 lg:hidden ${
                     isMobileFilterOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                 }`}
                 onClick={toggleMobileFilter}
-            ></div>
-            <div
-                className={`fixed top-0 right-0 w-64 h-full bg-white dark:bg-neutral-900 shadow-lg z-50 transform transition-transform duration-300 ${
-                    isMobileFilterOpen ? 'translate-x-0' : 'translate-x-full'
-                }`}
-                onClick={e => e.stopPropagation()}
             >
-                <div className="p-5 border-b border-neutral-200 dark:border-neutral-700 flex justify-between items-center">
-                    <h2 className="text-lg font-medium text-neutral-900 dark:text-white">Filtros</h2>
-                    <button onClick={toggleMobileFilter} className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"><X size={24} /></button>
-                </div>
+                <div
+                    className={`absolute right-0 top-0 bottom-0 w-80 bg-white dark:bg-neutral-900 shadow-xl transform transition-transform duration-300 ${
+                        isMobileFilterOpen ? 'translate-x-0' : 'translate-x-full'
+                    }`}
+                    onClick={e => e.stopPropagation()}
+                >
+                    <div className="p-6 h-full flex flex-col">
+                        {/* Header Mobile */}
+                        <div className="flex justify-between items-center mb-6 pb-4 border-b border-neutral-200 dark:border-neutral-700">
+                            <div className="flex items-center">
+                                <Filter size={20} className="text-primary-600 dark:text-primary-400 mr-2" />
+                                <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">Filtros</h2>
+                            </div>
+                            <button 
+                                onClick={toggleMobileFilter} 
+                                className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
+                            >
+                                <X size={24} />
+                            </button>
+                        </div>
 
-                <div className="p-5 flex flex-col space-y-6 overflow-y-auto h-[calc(100%-70px)]">
-                    <button
-                        onClick={() => { handleClearFilters(); toggleMobileFilter(); }}
-                        className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors w-full text-right"
-                    >
-                        Limpar Filtros
-                    </button>
-
-                    <div className="mb-6">
-                        <h3 className="text-sm font-medium text-neutral-900 dark:text-white mb-3">Categorias</h3>
-                        <ul className="space-y-3">
-                             <li>
-                                <button
-                                    onClick={() => handleCategorySelectAndNavigate(null)}
-                                    className={`text-sm w-full text-left transition-colors ${
-                                        location.pathname === '/catalogo'
-                                            ? 'text-primary-600 dark:text-primary-400 font-medium'
-                                            : 'text-neutral-700 dark:text-neutral-200 hover:text-primary-600 dark:hover:text-primary-400'
-                                    }`}
-                                >
-                                    Todos os Produtos
-                                </button>
-                            </li>
-                            {displayCategories.map(category => (
-                                <li key={category.pathSuffix}>
+                        {/* Conteúdo dos Filtros Mobile */}
+                        <div className="flex-1 overflow-y-auto space-y-6">
+                            {/* Categorias Mobile */}
+                            <div>
+                                <div className="flex items-center mb-4">
+                                    <Tag size={18} className="text-neutral-600 dark:text-neutral-400 mr-2" />
+                                    <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">Categorias</h3>
+                                </div>
+                                <div className="space-y-2">
                                     <button
-                                        onClick={() => handleCategorySelectAndNavigate(category.pathSuffix)}
-                                        className={`text-sm w-full text-left transition-colors ${
-                                            location.pathname === `/categorias/${category.pathSuffix}`
-                                                ? 'text-primary-600 dark:text-primary-400 font-medium'
-                                                : 'text-neutral-700 dark:text-neutral-200 hover:text-primary-600 dark:hover:text-primary-400'
+                                        onClick={() => handleCategorySelectAndNavigate(null)}
+                                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                                            location.pathname === '/catalogo'
+                                                ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-700 dark:text-primary-300 font-medium'
+                                                : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700/50'
                                         }`}
                                     >
-                                        {category.name}
+                                        Todos os Produtos
                                     </button>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                                    {displayCategories.map(category => (
+                                        <button
+                                            key={category.pathSuffix}
+                                            onClick={() => handleCategorySelectAndNavigate(category.pathSuffix)}
+                                            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                                                location.pathname === `/categorias/${category.pathSuffix}`
+                                                    ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-700 dark:text-primary-300 font-medium'
+                                                    : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700/50'
+                                            }`}
+                                        >
+                                            {category.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
 
-                    <div className="mb-6">
-                        <h3 className="text-sm font-medium text-neutral-900 dark:text-white mb-3">Preço</h3>
-                        <div className="flex items-center space-x-3">
-                            <input
-                                type="number"
-                                placeholder="0"
-                                value={priceRange[0]}
-                                onChange={(e) => handlePriceChange(e, 0)}
-                                className="w-1/2 px-2 py-1 border rounded text-sm bg-transparent dark:bg-neutral-700 border-neutral-300 dark:border-neutral-600 dark:text-white"
-                                min="0"
-                            />
-                            <span className="dark:text-neutral-400">-</span>
-                            <input
-                                type="number"
-                                placeholder="5000"
-                                value={priceRange[1]}
-                                onChange={(e) => handlePriceChange(e, 1)}
-                                className="w-1/2 px-2 py-1 border rounded text-sm bg-transparent dark:bg-neutral-700 border-neutral-300 dark:border-neutral-600 dark:text-white"
-                                min="0"
-                            />
+                            {/* Preço Mobile */}
+                            <div>
+                                <div className="flex items-center mb-4">
+                                    <DollarSign size={18} className="text-neutral-600 dark:text-neutral-400 mr-2" />
+                                    <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">Faixa de Preço</h3>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label className="block text-xs text-neutral-500 dark:text-neutral-400 mb-1">Mínimo</label>
+                                        <input
+                                            type="number" placeholder="0" value={priceRange[0]}
+                                            onChange={(e) => handlePriceChange(0, parseInt(e.target.value))}
+                                            className="w-full px-3 py-2 text-sm border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                            min="0"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-neutral-500 dark:text-neutral-400 mb-1">Máximo</label>
+                                        <input
+                                            type="number" placeholder="5000" value={priceRange[1]}
+                                            onChange={(e) => handlePriceChange(1, parseInt(e.target.value))}
+                                            className="w-full px-3 py-2 text-sm border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                            min="0"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Atual: R${priceRange[0].toFixed(2)} - R${priceRange[1].toFixed(2)}</p>
+
+                        {/* Botões de Ação Mobile */}
+                        <div className="flex gap-3 pt-6 border-t border-neutral-200 dark:border-neutral-700">
+                            <button
+                                onClick={() => { handleClearFilters(); toggleMobileFilter(); }}
+                                className="flex-1 px-4 py-2 bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors font-medium"
+                            >
+                                Limpar
+                            </button>
+                            <button
+                                onClick={toggleMobileFilter}
+                                className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+                            >
+                                Aplicar
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
