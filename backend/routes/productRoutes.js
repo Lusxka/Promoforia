@@ -62,7 +62,7 @@ router.get('/all-collections', async (req, res) => {
     }
 
     const produtosFiltrados = deduplicateByLinkAfiliadoKeepLatest(allProducts);
-    console.log(`Total após remoção de duplicados: ${produtosFiltrados.length}`);
+    console.log(`Total após remoção de duplicados e R$ 0: ${produtosFiltrados.length}`);
 
     res.json(produtosFiltrados);
   } catch (error) {
