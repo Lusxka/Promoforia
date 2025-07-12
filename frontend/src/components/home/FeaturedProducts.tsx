@@ -1,3 +1,4 @@
+// src/components/home/FeaturedProducts.tsx
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -7,13 +8,31 @@ import ProductCarousel from '../products/ProductCarousel';
 const FeaturedProducts: React.FC = () => {
     const { featuredProducts, loading, error } = useProducts();
 
-    const productsForCarousel = featuredProducts; 
+    if (loading) {
+        return (
+            <section className="section-padding bg-white dark:bg-neutral-900">
+                <div className="container-custom text-center">
+                    <p>Carregando produtos...</p>
+                </div>
+            </section>
+        );
+    }
 
     if (error) {
         return (
             <section className="section-padding bg-white dark:bg-neutral-900">
                 <div className="container-custom text-center text-error-500">
                     <p>{error}</p>
+                </div>
+            </section>
+        );
+    }
+
+    if (!featuredProducts || featuredProducts.length === 0) {
+        return (
+            <section className="section-padding bg-white dark:bg-neutral-900">
+                <div className="container-custom text-center text-error-500">
+                    <p>Nenhum produto encontrado em destaque.</p>
                 </div>
             </section>
         );
@@ -38,17 +57,15 @@ const FeaturedProducts: React.FC = () => {
                     </div>
                 </motion.div>
 
-                {/* --- SEÇÃO DO CARROSSEL DINÂMICO --- */}
                 <div className="mb-12">
                     <ProductCarousel
-                        products={productsForCarousel}
-                        title="" // Removido o comentário inline que estava causando o erro
+                        products={featuredProducts}
+                        title=""
                         autoplayDelay={4000}
                         transitionSpeed={1500}
                         slidesPerViewDesktop={5}
                     />
                 </div>
-                {/* --- FIM DA SEÇÃO DO CARROSSEL --- */}
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

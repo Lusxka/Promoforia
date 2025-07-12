@@ -51,8 +51,6 @@ interface ProductContextType {
 }
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
-
-// Update API_BASE_URL to use the proxy configuration from vite.config.ts
 const API_BASE_URL = '/api';
 
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -152,8 +150,44 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
     }, []);
 
+    const getProductCategory = useCallback((product: Product): string => {
+        const name = product.name.toLowerCase();
+        const category = product.backendCategory.toLowerCase();
+        const tags = product.tags.join(' ').toLowerCase();
+        const fullText = `${name} ${category} ${tags}`;
+
+        // Categorias de suplementos/nutrição
+        if (fullText.includes('creatina')) return 'creatina';
+        if (fullText.includes('whey') || fullText.includes('proteína') || fullText.includes('protein')) return 'proteina';
+        if (fullText.includes('bcaa') || fullText.includes('aminoácido') || fullText.includes('glutamina')) return 'aminoacidos';
+        if (fullText.includes('pré-treino') || fullText.includes('pre treino') || fullText.includes('cafeína')) return 'pre-treino';
+        if (fullText.includes('vitamina') || fullText.includes('multivitamínico') || fullText.includes('suplemento')) return 'vitaminas';
+        
+        // Categorias de tecnologia
+        if (fullText.includes('celular') || fullText.includes('smartphone') || fullText.includes('iphone') || fullText.includes('samsung')) return 'celulares';
+        if (fullText.includes('notebook') || fullText.includes('laptop') || fullText.includes('computador')) return 'informatica';
+        if (fullText.includes('fone') || fullText.includes('headphone') || fullText.includes('earphone')) return 'audio';
+        if (fullText.includes('tv') || fullText.includes('televisão') || fullText.includes('smart tv')) return 'tv';
+        
+        // Categorias de casa
+        if (fullText.includes('cozinha') || fullText.includes('panela') || fullText.includes('frigideira')) return 'cozinha';
+        if (fullText.includes('cama') || fullText.includes('travesseiro') || fullText.includes('lençol')) return 'quarto';
+        if (fullText.includes('sofá') || fullText.includes('mesa') || fullText.includes('cadeira')) return 'moveis';
+        
+        // Categorias de moda
+        if (fullText.includes('camiseta') || fullText.includes('camisa') || fullText.includes('blusa')) return 'roupas';
+        if (fullText.includes('tênis') || fullText.includes('sapato') || fullText.includes('sandália')) return 'calcados';
+        if (fullText.includes('relógio') || fullText.includes('óculos') || fullText.includes('bolsa')) return 'acessorios';
+        
+        // Categoria padrão baseada na categoria do backend
+        return product.categorySlug || 'outros';
+    }, []);
+
     const getTopRatedProducts = useCallback((products: Product[]): Product[] => {
         const seen = new Set<string>();
+        const categoryCount = new Map<string, number>();
+        const maxPerCategory = 2;
+
         return (
             products
                 .filter(p => p.rating > 0 && p.reviewCount >= 5)
@@ -163,14 +197,23 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
                     return scoreB - scoreA;
                 })
                 .filter(p => {
-                    const key = `${p.name}-${p.sellerName}`;
-                    if (seen.has(key)) return false;
-                    seen.add(key);
+                    // Filtro por nome similar para evitar duplicatas
+                    const nameKey = p.name.toLowerCase().split(' ').slice(0, 2).join(' ');
+                    if (seen.has(nameKey)) return false;
+                    seen.add(nameKey);
+
+                    // Filtro por categoria para diversificar
+                    const category = getProductCategory(p);
+                    const currentCount = categoryCount.get(category) || 0;
+                    
+                    if (currentCount >= maxPerCategory) return false;
+                    
+                    categoryCount.set(category, currentCount + 1);
                     return true;
                 })
                 .slice(0, 10)
         );
-    }, []);
+    }, [getProductCategory]);
 
     const fetchInitialProducts = useCallback(async () => {
         setLoading(true);

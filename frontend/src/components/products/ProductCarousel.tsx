@@ -1,3 +1,4 @@
+// src/components/products/ProductCarousel.tsx
 import React, { useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
@@ -27,6 +28,11 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
 }) => {
   if (!products || products.length === 0) return null;
 
+  // Filtra produtos únicos pelo _id para evitar repetição
+  const uniqueProducts = products.filter((prod, i, arr) =>
+    arr.findIndex(p => p._id === prod._id) === i
+  );
+
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
@@ -47,9 +53,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
           </h2>
         )}
 
-        {/* Wrapper flex → setas ficam fora da área do Swiper */}
         <div className="relative flex items-center">
-          {/* Botão anterior – fora do carrossel */}
           <button
             ref={prevRef}
             className="hidden md:flex shrink-0 items-center justify-center
@@ -72,10 +76,8 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
             speed={transitionSpeed}
             breakpoints={swiperBreakpoints}
             onInit={(swiper) => {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               swiper.params.navigation.prevEl = prevRef.current;
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               swiper.params.navigation.nextEl = nextRef.current;
               swiper.navigation.init();
@@ -83,14 +85,13 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
             }}
             className="product-carousel flex-1"
           >
-            {products.map((product, index) => (
-              <SwiperSlide key={product._id || index}>
+            {uniqueProducts.map((product, index) => (
+              <SwiperSlide key={product._id || `product-${index}`}>
                 <ProductCard product={product} index={index} />
               </SwiperSlide>
             ))}
           </Swiper>
 
-          {/* Botão próximo – fora do carrossel */}
           <button
             ref={nextRef}
             className="hidden md:flex shrink-0 items-center justify-center
