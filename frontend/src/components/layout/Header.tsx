@@ -1,9 +1,8 @@
 // src/components/layout/Header.tsx
 
-// Update the imports section to include ThemeToggle
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Search, Heart, ShoppingCart } from 'lucide-react';
+import { Menu, X, Search, ShoppingCart, Flame } from 'lucide-react'; // Certifique-se que 'Flame' está importado
 import { useCart } from '../../contexts/CartContext';
 import { useWishlist } from '../../contexts/WishlistContext';
 import ThemeToggle from '../common/ThemeToggle';
@@ -77,7 +76,6 @@ const Header: React.FC = () => {
     }
   };
 
-  // A sua lógica de estilos dinâmicos está perfeita e será a fonte da verdade
   const useDark = isScrolled || location.pathname !== '/';
   const textColor = useDark ? 'text-neutral-700 dark:text-neutral-200' : 'text-white';
   const iconColor = useDark ? 'text-neutral-700 dark:text-neutral-200' : 'text-white';
@@ -97,7 +95,7 @@ const Header: React.FC = () => {
         : isAdd
           ? 'Adicionado aos favoritos!'
           : 'Removido dos favoritos!';
-    const Icon = toast.context === 'cart' ? ShoppingCart : Heart;
+    const Icon = toast.context === 'cart' ? ShoppingCart : Flame; // Ícone de 'Flame' para favoritos no toast
     return (
       <div
         className={`fixed top-4 right-4 ${bgColor} text-white px-4 py-2 rounded-md shadow-lg flex items-center gap-2 animate-toast z-[9999]`}
@@ -182,13 +180,13 @@ const Header: React.FC = () => {
 
           {/* ---------- Ícones desktop ---------- */}
           <div className="hidden md:flex items-center space-x-2">
-            {/* ✅ CORREÇÃO APLICADA AQUI ✅ */}
             <ThemeToggle className={`${iconColor} ${hoverText}`} />
 
             <Link to="/favoritos" className={`relative p-2 ${iconColor} ${hoverText}`}>
-              <Heart size={22} />
+              <Flame size={22} />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-secondary-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                // ALTERADO: Bolinha de favoritos AGORA VERMELHA
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                   {wishlistCount}
                 </span>
               )}
@@ -197,6 +195,7 @@ const Header: React.FC = () => {
             <Link to="/carrinho" className={`relative p-2 ${iconColor} ${hoverText}`}>
               <ShoppingCart size={22} />
               {cartCount > 0 && (
+                // REVERTIDO: Bolinha do carrinho permanece AMARELA (secondary-500)
                 <span className="absolute -top-1 -right-1 bg-secondary-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                   {cartCount}
                 </span>
@@ -206,12 +205,12 @@ const Header: React.FC = () => {
 
           {/* ---------- Ícones mobile ---------- */}
           <div className="flex md:hidden items-center space-x-1">
-            {/* ✅ CORREÇÃO APLICADA AQUI TAMBÉM ✅ */}
             <ThemeToggle className={`${iconColor} ${hoverText}`} />
 
             <Link to="/carrinho" className={`relative p-2 ${iconColor} ${hoverText}`}>
               <ShoppingCart size={24} />
               {cartCount > 0 && (
+                // REVERTIDO: Bolinha do carrinho mobile permanece AMARELA (secondary-500)
                 <span className="absolute -top-1 -right-1 bg-secondary-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                   {cartCount}
                 </span>
