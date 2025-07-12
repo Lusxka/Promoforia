@@ -6,7 +6,7 @@ import FeaturedProducts from '../components/home/FeaturedProducts';
 import CategoriesSection from '../components/home/CategoriesSection';
 import Modal from '../components/home/Modal';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Truck, Headphones, RefreshCw, CheckCircle } from 'lucide-react';
+import { ShieldCheck, Truck, Headphones, RefreshCw, CheckCircle, Star, Gift, Zap, Award } from 'lucide-react';
 
 const HomePage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -77,86 +77,233 @@ const HomePage: React.FC = () => {
     }
   };
 
+  // Dados dos benefícios com melhor hierarquia visual
+  const benefits = [
+    {
+      icon: <Truck size={28} />,
+      title: "Entrega Expressa",
+      description: "Receba seus produtos em casa com rapidez e segurança",
+      gradient: "from-amber-400 to-orange-500"
+    },
+    {
+      icon: <ShieldCheck size={28} />,
+      title: "Compra Protegida",
+      description: "Transações 100% seguras com dados criptografados",
+      gradient: "from-emerald-400 to-teal-500"
+    },
+    {
+      icon: <RefreshCw size={28} />,
+      title: "Troca Garantida",
+      description: "30 dias para troca ou devolução sem custos adicionais",
+      gradient: "from-blue-400 to-indigo-500"
+    },
+    {
+      icon: <Headphones size={28} />,
+      title: "Suporte Premium",
+      description: "Atendimento especializado 24/7 para nossos clientes",
+      gradient: "from-purple-400 to-pink-500"
+    }
+  ];
+
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-white to-amber-50/30 dark:from-neutral-950 dark:via-neutral-900 dark:to-amber-950/20">
+      {/* Hero Section */}
       <HeroSection />
-      <section className="py-10 bg-neutral-50 dark:bg-neutral-900">
-        <div className="container-custom">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0 }} className="flex items-start p-4">
-              <div className="p-2 rounded-full bg-primary-100 text-primary-600 dark:bg-primary-500/20 dark:text-primary-300 mr-4"><Truck size={24} /></div>
-              <div><h3 className="font-medium text-neutral-800 dark:text-neutral-100 mb-1">Entrega Rápida</h3><p className="text-sm text-neutral-600 dark:text-neutral-300">Receba seus produtos em casa com rapidez e segurança</p></div>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }} className="flex items-start p-4">
-              <div className="p-2 rounded-full bg-primary-100 text-primary-600 dark:bg-primary-500/20 dark:text-primary-300 mr-4"><ShieldCheck size={24} /></div>
-              <div><h3 className="font-medium text-neutral-800 dark:text-neutral-100 mb-1">Compra Segura</h3><p className="text-sm text-neutral-600 dark:text-neutral-300">Transações protegidas e dados criptografados</p></div>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className="flex items-start p-4">
-              <div className="p-2 rounded-full bg-primary-100 text-primary-600 dark:bg-primary-500/20 dark:text-primary-300 mr-4"><RefreshCw size={24} /></div>
-              <div><h3 className="font-medium text-neutral-800 dark:text-neutral-100 mb-1">Devolução Gratuita</h3><p className="text-sm text-neutral-600 dark:text-neutral-300">30 dias para troca ou devolução sem custos</p></div>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }} className="flex items-start p-4">
-              <div className="p-2 rounded-full bg-primary-100 text-primary-600 dark:bg-primary-500/20 dark:text-primary-300 mr-4"><Headphones size={24} /></div>
-              <div><h3 className="font-medium text-neutral-800 dark:text-neutral-100 mb-1">Suporte 24/7</h3><p className="text-sm text-neutral-600 dark:text-neutral-300">Atendimento exclusivo para nossos clientes</p></div>
-            </motion.div>
+
+      {/* Seção de Benefícios Redesenhada */}
+      <section className="py-20 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-100/50 via-transparent to-orange-100/50 dark:from-amber-900/20 dark:via-transparent dark:to-orange-900/20"></div>
+        
+        <div className="container-custom relative z-10">
+          {/* Header da Seção */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent font-semibold text-sm uppercase tracking-wider mb-4">
+              <Award size={20} className="text-amber-500" />
+              Vantagens Exclusivas
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-neutral-900 dark:text-white mb-6">
+              Por que escolher o
+              <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent"> Promoforia?</span>
+            </h2>
+            <p className="text-xl text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto leading-relaxed">
+              Oferecemos a melhor experiência de compra com benefícios únicos pensados especialmente para você
+            </p>
+          </motion.div>
+
+          {/* Grid de Benefícios */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {benefits.map((benefit, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.15 }}
+                whileHover={{ y: -5, transition: { duration: 0.3 } }}
+                className="group relative"
+              >
+                <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-neutral-200/50 dark:border-neutral-700/50 h-full">
+                  {/* Ícone com Gradiente */}
+                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-r ${benefit.gradient} shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    <div className="text-white">
+                      {benefit.icon}
+                    </div>
+                  </div>
+                  
+                  {/* Conteúdo */}
+                  <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-3 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-neutral-600 dark:text-neutral-300 leading-relaxed">
+                    {benefit.description}
+                  </p>
+                  
+                  {/* Decoração */}
+                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-2 h-2 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full"></div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* Seção de Produtos em Destaque */}
       <FeaturedProducts />
+
+      {/* Seção de Categorias */}
       <CategoriesSection />
 
-      {/* Container do Cupom de Desconto (opcional) ⬇ */}
-      {/* Este bloco foi restaurado. Ele já é compatível com o modo escuro por usar um fundo gradiente e texto branco. */}
-      {/* <section className="py-16 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white">
-        <div className="container-custom">
+      {/* Seção de Cupom de Desconto Redesenhada */}
+      <section className="py-20 relative overflow-hidden">
+        {/* Background Animado */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700"></div>
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 bg-white/5 bg-opacity-5" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+          }}></div>
+        </div>
+        
+        <div className="container-custom relative z-10">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
+            transition={{ duration: 0.8 }}
+            className="text-center text-white"
           >
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Ofertas Especiais para Novos Clientes</h2>
-            <p className="text-lg text-neutral-200 mb-8 max-w-2xl mx-auto">
-              Ganhe 10% de desconto na sua primeira compra! Use o cupom <span className="font-semibold bg-white/20 px-2 py-1 rounded">BEMVINDO10</span>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 mb-6">
+              <Gift size={20} />
+              <span className="font-semibold text-sm uppercase tracking-wider">Oferta Especial</span>
+            </div>
+            
+            {/* Título Principal */}
+            <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              Desconto Exclusivo para
+              <br />
+              <span className="text-yellow-200">Novos Clientes</span>
+            </h2>
+            
+            {/* Descrição */}
+            <p className="text-xl text-amber-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+              Aproveite nossa promoção de boas-vindas e ganhe 
+              <span className="font-bold text-yellow-200"> 15% OFF </span>
+              na sua primeira compra! Use o cupom abaixo:
             </p>
-            <a href="/catalogo?promocao=true" className="button-secondary">
-              Ver Ofertas Exclusivas
-            </a>
+            
+            {/* Cupom Destacado */}
+            <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-white/20">
+              <div className="text-3xl">🎁</div>
+              <div className="text-left">
+                <div className="text-sm text-amber-100 font-medium uppercase tracking-wider mb-1">Código do Cupom</div>
+                <div className="text-3xl font-bold text-yellow-200 tracking-wider">PROMOFORIA15</div>
+              </div>
+              <button className="ml-4 bg-white/20 hover:bg-white/30 transition-colors rounded-lg px-4 py-2 text-sm font-medium">
+                Copiar
+              </button>
+            </div>
+            
+            {/* CTA */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a 
+                href="/catalogo?promocao=true" 
+                className="group inline-flex items-center gap-3 bg-white text-amber-600 hover:bg-amber-50 transition-all duration-300 rounded-2xl px-8 py-4 font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105"
+              >
+                <Zap size={24} />
+                Ver Ofertas Exclusivas
+                <div className="w-2 h-2 bg-amber-600 rounded-full group-hover:animate-pulse"></div>
+              </a>
+              <div className="text-amber-100 text-sm">
+                *Válido apenas para primeira compra
+              </div>
+            </div>
           </motion.div>
         </div>
-      </section> */}
+      </section>
 
-
+      {/* Modal Redesenhado */}
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={modalContent === 'form' ? "Bem Vindo ao Promoforia ! Seja um seguidor" : "Inscrição Confirmada!"}
+        title={modalContent === 'form' ? "🌟 Bem-vindo ao Promoforia!" : "✨ Inscrição Confirmada!"}
       >
         {modalContent === 'form' ? (
           <div className="text-center">
-            <p className="text-neutral-600 dark:text-neutral-300 mb-6">
-              Receba as melhores ofertas e novidades diretamente no seu e-mail.
-            </p>
-            <form onSubmit={handleNewsletterSubmit}>
-              <div className="flex flex-col sm:flex-row gap-3">
+            <div className="mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Star size={32} className="text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
+                Junte-se ao nosso clube VIP!
+              </h3>
+              <p className="text-neutral-600 dark:text-neutral-300">
+                Seja o primeiro a saber das melhores ofertas e promoções exclusivas.
+              </p>
+            </div>
+            
+            <form onSubmit={handleNewsletterSubmit} className="space-y-4">
+              <div className="relative">
                 <input
                   type="email"
                   name="email"
                   placeholder="Seu melhor e-mail"
-                  className="flex-1 p-3 border border-neutral-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-neutral-700 dark:border-neutral-600 dark:text-white dark:placeholder-neutral-400"
+                  className="w-full p-4 border-2 border-neutral-200 dark:border-neutral-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent dark:bg-neutral-700 dark:text-white dark:placeholder-neutral-400 transition-all duration-300"
                   required
                   disabled={isSubmitting}
                 />
-                <button
-                  type="submit"
-                  className="button-primary px-6 py-3"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Enviando...' : 'Inscrever-se'}
-                </button>
               </div>
+              
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:transform-none"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <span className="inline-flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Enviando...
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-2">
+                    <Gift size={20} />
+                    Quero Receber Ofertas!
+                  </span>
+                )}
+              </button>
             </form>
+            
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-4">
+              Ao se inscrever, você aceita receber e-mails promocionais. Pode cancelar a qualquer momento.
+            </p>
           </div>
         ) : (
           <motion.div
@@ -165,15 +312,23 @@ const HomePage: React.FC = () => {
             transition={{ duration: 0.5 }}
             className="text-center py-8"
           >
-            <CheckCircle size={48} className="text-success-500 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-3">Obrigado por se inscrever!</h3>
-            <p className="text-neutral-600 dark:text-neutral-300">
-              Você agora receberá as melhores ofertas diretamente na sua caixa de entrada.
+            <div className="w-20 h-20 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle size={40} className="text-white" />
+            </div>
+            <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-4">
+              Perfeito! Você está dentro!
+            </h3>
+            <p className="text-neutral-600 dark:text-neutral-300 mb-6">
+              Agora você receberá as melhores ofertas e promoções exclusivas diretamente na sua caixa de entrada.
             </p>
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-4">
+              <p className="text-sm text-amber-700 dark:text-amber-300 font-medium">
+                🎁 Fique atento! Sua primeira oferta exclusiva chegará em breve!
+              </p>
+            </div>
           </motion.div>
         )}
       </Modal>
-
     </div>
   );
 };
